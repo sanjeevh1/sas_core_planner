@@ -12,9 +12,9 @@ public class DatabaseInitializer {
             String password = System.getenv("SQL_PASSWORD");
             System.out.println(password + " is the password");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", password);
-            System.out.println("Connected to the database!");
-            initializeDatabase();
+            createTables();
             connection.close();
+            System.out.println("Database updated.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -25,18 +25,34 @@ public class DatabaseInitializer {
      * Creates the course table if it does not exist.
      * @throws SQLException
      */
-    public static void initializeDatabase() throws SQLException {
+    public static void createTables() throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate("CREATE DATABASE IF NOT EXISTS course_info");
         statement.execute("USE course_info");
         statement.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS course (
-                    course_id CHAR(10) PRIMARY KEY NOT NULL,
-                    course_title VARCHAR(255),
-                    credits FLOAT,
-                    core_code VARCHAR(255),
-                    subject VARCHAR(255)
-                );
+            CREATE TABLE IF NOT EXISTS course (
+                id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                course_number CHAR(10) NOT NULL UNIQUE,
+                course_title VARCHAR(255),
+                credits FLOAT,
+                core_code VARCHAR(255),
+                subject VARCHAR(255)
+            );
+        """);
+        statement.executeUpdate("""
+            CREATE TABLE IF NOT EXISTS core_goal (
+                id TINYINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                code CHAR(3) NOT NULL UNIQUE
+            );
+        """);
+        statement.executeUpdate("""
+            CREATE TABLE IF NOT EXISTS course_core (
+                course_id INT NOT NULL,
+                core_id TINYINT NOT NULL,
+                PRIMARY KEY (course_id, core_id),
+                FOREIGN KEY (course_id) REFERENCES course(id),
+                FOREIGN KEY (core_id) REFERENCES core_goal(id)
+            );
         """);
     }
 }
