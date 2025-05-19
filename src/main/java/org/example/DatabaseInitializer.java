@@ -7,10 +7,10 @@ import java.sql.Statement;
 
 public class DatabaseInitializer {
     private static Connection connection;
+
     public static void main(String[] args) {
         try {
             String password = System.getenv("SQL_PASSWORD");
-            System.out.println(password + " is the password");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", password);
             createTables();
             connection.close();
@@ -23,7 +23,7 @@ public class DatabaseInitializer {
     /**
      * Creates the course_info database if it does not exist.
      * Creates the course table if it does not exist.
-     * @throws SQLException
+     * @throws SQLException if a database access error occurs.
      */
     public static void createTables() throws SQLException {
         Statement statement = connection.createStatement();
@@ -35,23 +35,23 @@ public class DatabaseInitializer {
                 course_number CHAR(10) NOT NULL UNIQUE,
                 course_title VARCHAR(255),
                 credits FLOAT,
-                core_code VARCHAR(255),
+                core_codes VARCHAR(255),
                 subject VARCHAR(255)
             );
         """);
         statement.executeUpdate("""
             CREATE TABLE IF NOT EXISTS core_goal (
-                id TINYINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                code CHAR(3) NOT NULL UNIQUE
+                code CHAR(3) PRIMARY KEY NOT NULL,
+                goal VARCHAR(255)
             );
         """);
         statement.executeUpdate("""
             CREATE TABLE IF NOT EXISTS course_core (
                 course_id INT NOT NULL,
-                core_id TINYINT NOT NULL,
-                PRIMARY KEY (course_id, core_id),
+                core_code CHAR(3) NOT NULL,
+                PRIMARY KEY (course_id, core_code),
                 FOREIGN KEY (course_id) REFERENCES course(id),
-                FOREIGN KEY (core_id) REFERENCES core_goal(id)
+                FOREIGN KEY (core_code) REFERENCES core_goal(code)
             );
         """);
     }
