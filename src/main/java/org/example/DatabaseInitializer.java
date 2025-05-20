@@ -1,9 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DatabaseInitializer {
     private static Connection connection;
@@ -13,6 +10,7 @@ public class DatabaseInitializer {
             String password = System.getenv("SQL_PASSWORD");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", password);
             createTables();
+            loadCoreGoals();
             connection.close();
             System.out.println("Database updated.");
         } catch (SQLException e) {
@@ -54,5 +52,18 @@ public class DatabaseInitializer {
                 FOREIGN KEY (core_code) REFERENCES core_goal(code)
             );
         """);
+    }
+
+    /**
+     * Loads the core goals into the database.
+     * @throws SQLException if a database access error occurs.
+     */
+    public static void loadCoreGoals() throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT IGNORE INTO core_goal (code, goal) VALUES (?, ?)");
+        for (CoreCode coreCode : CoreCode.values()) {
+            preparedStatement.setString(1, coreCode.name());
+            preparedStatement.setString(2, coreCode.getGoal());
+            preparedStatement.executeUpdate();
+        }
     }
 }
