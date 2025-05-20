@@ -10,11 +10,14 @@ import java.io.FileReader;
 
 public class DatabaseInitializer {
     private static Connection connection;
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306";
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/course_info";
+    public static final String USER = "root";
+    public static final String PASSWORD = System.getenv("SQL_PASSWORD");
 
     public static void main(String[] args) {
         try {
-            String password = System.getenv("SQL_PASSWORD");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", password);
+            connection = DriverManager.getConnection(DEFAULT_URL, USER, PASSWORD);
             createTables();
             loadCoreGoals();
             loadCourses();

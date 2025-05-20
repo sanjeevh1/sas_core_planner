@@ -26,6 +26,22 @@ public class Course {
     private String subject;
 
     /**
+     * Constructor for the Course class.
+     * @param courseNumber the course number.
+     * @param title the course title.
+     * @param credits the number of credits for the course.
+     * @param coreCodes a list of core codes satisfied by the course.
+     * @param subject the subject of the course.
+     */
+    public Course(String courseNumber, String title, float credits, List<CoreCode> coreCodes, String subject) {
+        this.courseNumber = courseNumber;
+        this.title = title;
+        this.credits = credits;
+        this.coreCodes = coreCodes;
+        this.subject = subject;
+    }
+
+    /**
      * Retrieves the course number.
      * @return the course number.
      */
