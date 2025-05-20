@@ -25,6 +25,13 @@ public class Course {
     @CsvBindByName
     private String subject;
 
+
+    /**
+     * Default constructor for the Course class.
+     */
+    public Course() {
+        // Default constructor
+    }
     /**
      * Constructor for the Course class.
      * @param courseNumber the course number.

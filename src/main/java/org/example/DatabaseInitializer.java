@@ -9,7 +9,7 @@ import java.util.List;
 import java.io.FileReader;
 
 public class DatabaseInitializer {
-    private static Connection connection;
+    private static Connection connection = null;
     private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306";
     public static final String DB_URL = "jdbc:mysql://localhost:3306/course_info";
     public static final String USER = "root";
@@ -21,10 +21,17 @@ public class DatabaseInitializer {
             createTables();
             loadCoreGoals();
             loadCourses();
-            connection.close();
             System.out.println("Database updated.");
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
