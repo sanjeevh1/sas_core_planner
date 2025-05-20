@@ -24,4 +24,44 @@ public class Course {
 
     @CsvBindByName
     private String subject;
+
+    /**
+     * Retrieves the course number.
+     * @return the course number.
+     */
+    public String getCourseNumber() {
+        return courseNumber;
+    }
+
+    /**
+     * Retrieves the course title.
+     * @return the course title.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Retrieves the credits for the course.
+     * @return the number of credits for the course.
+     */
+    public float getCredits() {
+        return credits;
+    }
+
+    /**
+     * Retrieves the core codes for the course.
+     * @return a list of core codes satisfied by the course.
+     */
+    public List<CoreCode> getCoreCodes() {
+        return coreCodes;
+    }
+
+    /**
+     * Retrieves the subject of the course.
+     * @return the subject of the course.
+     */
+    public String getSubject() {
+        return subject;
+    }
 }
