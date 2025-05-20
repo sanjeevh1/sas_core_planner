@@ -10,9 +10,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A controller class for handling course-related requests.
+ */
 @RestController
 public class CourseController {
 
+    /**
+     * Retrieves a list of courses based on the provided search tokens.
+     * @param tokens a list of core codes and boolean operators (AND, OR).
+     * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
+     */
     @GetMapping("/courses")
     public List<Course> courses(@RequestParam("tokens") List<String> tokens) {
         StringBuilder queryBuilder = new StringBuilder("SELECT * FROM course WHERE course.id in (");
