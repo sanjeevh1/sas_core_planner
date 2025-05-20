@@ -4,11 +4,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.io.FileReader;
 
@@ -93,7 +89,8 @@ public class DatabaseInitializer {
                         .withIgnoreLeadingWhiteSpace(true)
                         .build()
                         .parse();
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT IGNORE INTO course (course_number, course_title, credits, core_codes, subject) VALUES (?, ?, ?, ?, ?)");
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT IGNORE INTO course (course_number, course_title, credits, core_codes, subject) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement corePreparedStatement = connection.prepareStatement("INSERT IGNORE INTO course_core (course_id, core_code) VALUES (?, ?)");
                 for (Course course : courses) {
                     preparedStatement.setString(1, course.getCourseNumber());
                     preparedStatement.setString(2, course.getTitle());
@@ -101,6 +98,15 @@ public class DatabaseInitializer {
                     preparedStatement.setString(4, String.join(",", course.getCoreCodes().stream().map(CoreCode::name).toArray(String[]::new)));
                     preparedStatement.setString(5, course.getSubject());
                     preparedStatement.executeUpdate();
+                    ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                    if(resultSet.next()) {
+                        int courseId = resultSet.getInt(1);
+                        for (CoreCode coreCode : course.getCoreCodes()) {
+                            corePreparedStatement.setInt(1, courseId);
+                            corePreparedStatement.setString(2, coreCode.name());
+                            corePreparedStatement.executeUpdate();
+                        }
+                    }
                 }
             } catch (FileNotFoundException e) {
                 System.err.println("File not found: " + filePath);
