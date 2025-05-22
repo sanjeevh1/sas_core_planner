@@ -1,4 +1,6 @@
 package org.example;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ import java.util.List;
  */
 @RestController
 public class CourseController {
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     /**
      * Retrieves a list of courses based on the provided search tokens.
@@ -55,13 +58,13 @@ public class CourseController {
             }
             return courses;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error executing SQL query: {}", query, e);
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error closing database connection", e);
                 }
             }
         }

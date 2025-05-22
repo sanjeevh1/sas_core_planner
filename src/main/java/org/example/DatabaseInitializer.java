@@ -1,6 +1,8 @@
 package org.example;
 
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +16,7 @@ public class DatabaseInitializer {
     public static final String DB_URL = "jdbc:mysql://localhost:3306/course_info";
     public static final String USER = "root";
     public static final String PASSWORD = System.getenv("SQL_PASSWORD");
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
 
     public static void main(String[] args) {
         try {
@@ -21,15 +24,15 @@ public class DatabaseInitializer {
             createTables();
             loadCoreGoals();
             loadCourses();
-            System.out.println("Database updated.");
+            logger.info("Database initialized successfully.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Database connection error: ", e);
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error closing connection: ", e);
                 }
             }
         }
@@ -119,9 +122,9 @@ public class DatabaseInitializer {
                     }
                 }
             } catch (FileNotFoundException e) {
-                System.err.println("File not found: " + filePath);
+                logger.error("File not found: {}", filePath, e);
             } catch (IOException e) {
-                System.err.println("File could not be opened: " + filePath);
+                logger.error("Error reading file: {}", filePath, e);
             }
         }
     }
