@@ -2,13 +2,20 @@ package org.example;
 
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 import java.util.List;
 
 /**
  * A class containing the information for a Course.
  */
+@Entity
 public class Course {
+
+    private @Id
+    @GeneratedValue Long id;
 
     @CsvBindByName(column = "Course ID")
     private String courseNumber;

@@ -3,6 +3,9 @@ package org.example;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,13 +13,23 @@ import java.sql.*;
 import java.util.List;
 import java.io.FileReader;
 
-public class DatabaseInitializer {
+@Configuration
+public class LoadDatabase {
     private static Connection connection = null;
     private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306";
     public static final String DB_URL = "jdbc:mysql://localhost:3306/course_info";
     public static final String USER = "root";
-    public static final String PASSWORD = System.getenv("SQL_PASSWORD");
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
+    public static final String PASSWORD = System.getenv("MYSQL_PASSWORD");
+    private static final Logger logger = LoggerFactory.getLogger(LoadDatabase.class);
+
+    /**
+     * Initializes the database with core goals and courses.
+     * @param repository the CourseRepository instance for database operations.
+     * @return a CommandLineRunner that initializes the database.
+     */
+    @Bean
+    CommandLineRunner initDatabase(CourseRepository repository) {/*TODO*/}
+
 
     public static void main(String[] args) {
         try {
