@@ -28,7 +28,7 @@ public class LoadDatabase {
      * @return a CommandLineRunner that initializes the database.
      */
     @Bean
-    CommandLineRunner initDatabase(CourseRepository repository) {/*TODO*/}
+    CommandLineRunner initDatabase(CourseRepository repository) {/*TODO*/ return LoadDatabase::main;}
 
 
     public static void main(String[] args) {
