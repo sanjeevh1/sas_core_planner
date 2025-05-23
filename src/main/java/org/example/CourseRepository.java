@@ -1,6 +1,7 @@
 package org.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -26,18 +27,7 @@ public class CourseRepository {
             return null;
         }
         String query = getQuery(tokens);
-        return jdbcTemplate.query(query, (rs, rowNum) -> {
-            String courseNumber = rs.getString("course_number");
-            String title = rs.getString("course_title");
-            float credits = rs.getFloat("credits");
-            String subject = rs.getString("subject");
-            String[] coreCodes = rs.getString("core_codes").split(",");
-            List<CoreCode> cores = new ArrayList<>();
-            for (String coreCode: coreCodes) {
-                cores.add(CoreCode.valueOf(coreCode));
-            }
-            return new Course(courseNumber, title, credits, cores, subject);
-        });
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Course.class));
     }
 
     /**

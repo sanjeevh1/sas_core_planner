@@ -119,7 +119,7 @@ public class LoadDatabase {
                 PreparedStatement corePreparedStatement = connection.prepareStatement("INSERT IGNORE INTO course_core (course_id, core_code) VALUES (?, ?)");
                 for (Course course : courses) {
                     preparedStatement.setString(1, course.getCourseNumber());
-                    preparedStatement.setString(2, course.getTitle());
+                    preparedStatement.setString(2, course.getCourseTitle());
                     preparedStatement.setFloat(3, course.getCredits());
                     preparedStatement.setString(4, String.join(",", course.getCoreCodes().stream().map(CoreCode::name).toArray(String[]::new)));
                     preparedStatement.setString(5, course.getSubject());

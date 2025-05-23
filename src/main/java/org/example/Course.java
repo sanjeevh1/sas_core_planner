@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,15 +22,15 @@ public class Course {
     private String courseNumber;
 
     @CsvBindByName(column = "Course Title")
-    private String title;
+    private String courseTitle;
 
-    @CsvBindByName
+    @CsvBindByName(column = "Credits")
     private float credits;
 
     @CsvBindAndSplitByName(column = "Core Code", elementType = CoreCode.class, splitOn = ",")
     private List<CoreCode> coreCodes;
 
-    @CsvBindByName
+    @CsvBindByName(column = "Subject")
     private String subject;
 
 
@@ -49,7 +50,7 @@ public class Course {
      */
     public Course(String courseNumber, String title, float credits, List<CoreCode> coreCodes, String subject) {
         this.courseNumber = courseNumber;
-        this.title = title;
+        this.courseTitle = title;
         this.credits = credits;
         this.coreCodes = coreCodes;
         this.subject = subject;
@@ -67,8 +68,8 @@ public class Course {
      * Retrieves the course title.
      * @return the course title.
      */
-    public String getTitle() {
-        return title;
+    public String getCourseTitle() {
+        return courseTitle;
     }
 
     /**
@@ -94,4 +95,49 @@ public class Course {
     public String getSubject() {
         return subject;
     }
+
+    /**
+     * Sets the course number.
+     * @param courseNumber the course number to set.
+     */
+    public void setCourseNumber(String courseNumber) {
+        this.courseNumber = courseNumber;
+    }
+
+    /**
+     * Sets the course title.
+     * @param courseTitle the course title to set.
+     */
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+
+    /**
+     * Sets the credits for the course.
+     * @param credits the number of credits to set.
+     */
+    public void setCredits(float credits) {
+        this.credits = credits;
+    }
+    /**
+     * Sets the core codes for the course.
+     * @param coreString a comma-separated string of core codes.
+     */
+    public void setCoreCodes(String coreString) {
+        String[] coreCodesArray = coreString.split(",");
+        this.coreCodes = new ArrayList<>();
+        for (String code : coreCodesArray) {
+            this.coreCodes.add(CoreCode.valueOf(code));
+        }
+    }
+
+    /**
+     * Sets the subject of the course.
+     * @param subject the subject to set.
+     */
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+
 }
