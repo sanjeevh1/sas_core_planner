@@ -11,7 +11,6 @@ import java.util.List;
  * A controller class for handling course-related requests.
  */
 @RestController
-@RequestMapping("/api/v1")
 public class CourseController {
 
     private final CourseRepository courseRepository;
