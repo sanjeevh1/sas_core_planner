@@ -1,6 +1,5 @@
 package org.example;
 
-import com.opencsv.bean.CsvToBeanBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
@@ -36,6 +31,7 @@ public class CourseRepository {
      */
     public List<Course> getCourses(List<String> tokens) {
         if(!validateTokens(tokens)) {
+            logger.error("Invalid tokens provided: {}", tokens);
             return null;
         }
         String query = getQuery(tokens);
@@ -131,31 +127,10 @@ public class CourseRepository {
     }
 
     /**
-     * Loads courses from a CSV file into the database.
-     * @param filePath the path to the CSV file containing course data.
-     */
-    public void loadCourses(String filePath) {
-        try (FileReader reader = new FileReader(filePath)) {
-            List<Course> courses = new CsvToBeanBuilder<Course>(reader)
-                    .withType(Course.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build()
-                    .parse();
-            for (Course course : courses) {
-                insertCourse(course);
-            }
-        } catch (FileNotFoundException e) {
-            logger.error("File not found: {}", filePath, e);
-        } catch (IOException e) {
-            logger.error("Error reading file: {}", filePath, e);
-        }
-    }
-
-    /**
      * Inserts a course into the database.
      * @param course the course to be inserted.
      */
-    private void insertCourse(Course course) {
+    public void addCourse(Course course) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String insertCourse = "INSERT IGNORE INTO course (course_number, course_title, credits, core_codes, subject) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(connection -> {
