@@ -16,12 +16,11 @@ public class LoadDatabase {
      * @return a CommandLineRunner that initializes the database.
      */
     @Bean
-    CommandLineRunner initDatabase(CourseRepository repository) { return (args) -> {
+    CommandLineRunner initDatabase(CourseRepository repository) { return (filePaths) -> {
         repository.initializeTables();
         repository.loadCoreGoals();
-        for(CoreCode code : CoreCode.values()) {
-            String filePath = "src/main/resources/" + code.name() + ".csv";
-            repository.loadCourses(filePath);
+        for(String path : filePaths) {
+            repository.loadCourses(path);
         }
     };}
 
