@@ -11,13 +11,16 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the DatabaseInitializer class.
+ */
 public class DatabaseInitializerTest {
     private static final String MULTIPLE_COURSES_PATHNAME = "src/test/resources/multiple_courses.csv";
     private static final String MULTIPLE_CORES_PATHNAME = "src/test/resources/multiple_cores.csv";
+    private static final String[] MULTIPLE_FILES = {"src/test/resources/courses1.csv","src/test/resources/courses2.csv"};
 
     private final DatabaseInitializer databaseInitializer = new DatabaseInitializer();
     private static final CourseRepository courseRepository = mock(CourseRepository.class);
-
 
     /**
      * Tests the initialization of the database with multiple courses from a CSV file.
@@ -40,6 +43,10 @@ public class DatabaseInitializerTest {
         Assert.assertTrue(capturedCourses.containsAll(expectedCourses));
     }
 
+    /**
+     * Tests the initialization of the database with multiple core codes for a single course.
+     * @throws Exception if an error occurs during the test.
+     */
     @Test
     public void multipleCores() throws Exception {
         reset(courseRepository);
@@ -52,5 +59,23 @@ public class DatabaseInitializerTest {
         Assert.assertEquals(expectedCourse, courseCaptor.getValue());
     }
 
+    /**
+     * Tests the initialization of the database with multiple files.
+     * @throws Exception if an error occurs during the test.
+     */
+    @Test
+    public void multipleFiles() throws Exception {
+        reset(courseRepository);
+        ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
+        databaseInitializer.initDatabase(courseRepository).run(MULTIPLE_FILES);
+        verify(courseRepository, times(2)).addCourse(courseCaptor.capture());
+        List<Course> capturedCourses = courseCaptor.getAllValues();
 
+        Course expectedCourse1 = new Course("00:000:000", "COURSE TITLE 1", 1.5f, new ArrayList<>(List.of(CoreCode.CCO)), "Subject 1");
+        Course expectedCourse2 = new Course("11:111:111", "COURSE TITLE 2", 3, new ArrayList<>(List.of(CoreCode.NS)), "Subject 2");
+        ArrayList<Course> expectedCourses = new ArrayList<>();
+        expectedCourses.add(expectedCourse1);
+        expectedCourses.add(expectedCourse2);
+        Assert.assertTrue(capturedCourses.containsAll(expectedCourses));
+    }
 }
