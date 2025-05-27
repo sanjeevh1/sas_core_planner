@@ -139,5 +139,20 @@ public class Course {
         this.subject = subject;
     }
 
+    /**
+     * Checks if two Course objects are equal.
+     * @param o the object to compare with this Course.
+     * @return true o is a Course and all fields are equal, false otherwise.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course course)) return false;
 
+        if (Float.compare(course.credits, credits) != 0) return false;
+        if (!courseNumber.equals(course.courseNumber)) return false;
+        if (!courseTitle.equals(course.courseTitle)) return false;
+        if (!coreCodes.equals(course.coreCodes)) return false;
+        return subject.equals(course.subject);
+    }
 }

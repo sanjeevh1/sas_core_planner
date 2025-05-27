@@ -16,8 +16,8 @@ import java.util.List;
  * Configuration class for initializing the database with core goals and courses.
  */
 @Configuration
-public class LoadDatabase {
-    private static final Logger logger = LoggerFactory.getLogger(LoadDatabase.class);
+public class DatabaseInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
     private CourseRepository repository;
 
     /**
@@ -26,7 +26,7 @@ public class LoadDatabase {
      * @return a CommandLineRunner that initializes the database.
      */
     @Bean
-    CommandLineRunner initDatabase(CourseRepository repository) { return (filePaths) -> {
+    public CommandLineRunner initDatabase(CourseRepository repository) { return (filePaths) -> {
         this.repository = repository;
         repository.initializeTables();
         repository.loadCoreGoals();
