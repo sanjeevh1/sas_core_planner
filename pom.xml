@@ -14,19 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!--<dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.3.4</version>
-                <scope>provided</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>-->
-
     <dependencies>
-
         <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
             <groupId>com.mysql</groupId>
