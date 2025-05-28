@@ -2,14 +2,14 @@ import org.example.CoreCode;
 import org.example.Course;
 import org.example.CourseRepository;
 import org.example.DatabaseInitializer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for the DatabaseInitializer class.
@@ -20,7 +20,15 @@ public class DatabaseInitializerTest {
     private static final String[] MULTIPLE_FILES = {"src/test/resources/courses1.csv","src/test/resources/courses2.csv"};
 
     private final DatabaseInitializer databaseInitializer = new DatabaseInitializer();
-    private static final CourseRepository courseRepository = mock(CourseRepository.class);
+    private static final CourseRepository courseRepository = Mockito.mock(CourseRepository.class);
+
+    /**
+     * Resets the course repository before each test.
+     */
+    @BeforeEach
+    public void setUp() {
+        Mockito.reset(courseRepository);
+    }
 
     /**
      * Tests the initialization of the database with multiple courses from a CSV file.
@@ -28,11 +36,10 @@ public class DatabaseInitializerTest {
      */
     @Test
     public void multipleCourses() throws Exception {
-        reset(courseRepository);
         String[] filePaths = {MULTIPLE_COURSES_PATHNAME};
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
         databaseInitializer.initDatabase(courseRepository).run(filePaths);
-        verify(courseRepository, times(2)).addCourse(courseCaptor.capture());
+        Mockito.verify(courseRepository, Mockito.times(2)).addCourse(courseCaptor.capture());
         List<Course> capturedCourses = courseCaptor.getAllValues();
 
         Course expectedCourse1 = new Course("12:345:678", "COURSE TITLE 1", 3, new ArrayList<>(List.of(CoreCode.CCO)), "Subject 1");
@@ -40,7 +47,7 @@ public class DatabaseInitializerTest {
         ArrayList<Course> expectedCourses = new ArrayList<>();
         expectedCourses.add(expectedCourse1);
         expectedCourses.add(expectedCourse2);
-        Assert.assertTrue(capturedCourses.containsAll(expectedCourses));
+        Assertions.assertTrue(capturedCourses.containsAll(expectedCourses));
     }
 
     /**
@@ -49,14 +56,13 @@ public class DatabaseInitializerTest {
      */
     @Test
     public void multipleCores() throws Exception {
-        reset(courseRepository);
         String[] filePaths = {MULTIPLE_CORES_PATHNAME};
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
         databaseInitializer.initDatabase(courseRepository).run(filePaths);
-        verify(courseRepository, times(1)).addCourse(courseCaptor.capture());
+        Mockito.verify(courseRepository, Mockito.times(1)).addCourse(courseCaptor.capture());
         List<CoreCode> expectedCores = new ArrayList<>(List.of(CoreCode.CCO, CoreCode.AHo, CoreCode.WCr));
         Course expectedCourse = new Course("00:000:000", "COURSE TITLE 1", 3, expectedCores, "Subject 1");
-        Assert.assertEquals(expectedCourse, courseCaptor.getValue());
+        Assertions.assertEquals(expectedCourse, courseCaptor.getValue());
     }
 
     /**
@@ -65,10 +71,9 @@ public class DatabaseInitializerTest {
      */
     @Test
     public void multipleFiles() throws Exception {
-        reset(courseRepository);
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
         databaseInitializer.initDatabase(courseRepository).run(MULTIPLE_FILES);
-        verify(courseRepository, times(2)).addCourse(courseCaptor.capture());
+        Mockito.verify(courseRepository, Mockito.times(2)).addCourse(courseCaptor.capture());
         List<Course> capturedCourses = courseCaptor.getAllValues();
 
         Course expectedCourse1 = new Course("00:000:000", "COURSE TITLE 1", 1.5f, new ArrayList<>(List.of(CoreCode.CCO)), "Subject 1");
@@ -76,6 +81,6 @@ public class DatabaseInitializerTest {
         ArrayList<Course> expectedCourses = new ArrayList<>();
         expectedCourses.add(expectedCourse1);
         expectedCourses.add(expectedCourse2);
-        Assert.assertTrue(capturedCourses.containsAll(expectedCourses));
+        Assertions.assertTrue(capturedCourses.containsAll(expectedCourses));
     }
 }
