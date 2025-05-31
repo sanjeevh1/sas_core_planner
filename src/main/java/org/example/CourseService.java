@@ -13,6 +13,11 @@ public class CourseService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Adds a course to a user's list of courses.
+     * @param username the username of the user
+     * @param course the course to add
+     */
     public void addCourseToUser(String username, Course course) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -26,6 +31,8 @@ public class CourseService {
 
     /**
      * Removes a course from a user's list of courses.
+     * @param username the username of the user
+     * @param courseId the ID of the course to remove
      */
     public void removeCourseFromUser(String username, Long courseId) {
         User user = userRepository.findByUsername(username)
@@ -40,6 +47,8 @@ public class CourseService {
 
     /**
      * Retrieves a user's list of courses.
+     * @param username the username of the user
+     * @return a list of courses associated with the user
      */
     public List<Course> getUserCourses(String username) {
         User user = userRepository.findByUsername(username)
