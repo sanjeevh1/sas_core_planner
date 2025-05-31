@@ -1,0 +1,50 @@
+package org.example;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Service class for managing course-related operations.
+ */
+@Service
+public class CourseService {
+    @Autowired
+    private UserRepository userRepository;
+
+    public void addCourseToUser(String username, Course course) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Assuming User has a method to add a course
+        user.getCourses().add(course);
+
+        // Save the updated user back to the repository
+        userRepository.save(user);
+    }
+
+    /**
+     * Removes a course from a user's list of courses.
+     */
+    public void removeCourseFromUser(String username, Long courseId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Assuming User has a method to remove a course by ID
+        user.getCourses().removeIf(course -> course.getId().equals(courseId));
+
+        // Save the updated user back to the repository
+        userRepository.save(user);
+    }
+
+    /**
+     * Retrieves a user's list of courses.
+     */
+    public List<Course> getUserCourses(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getCourses();
+    }
+}

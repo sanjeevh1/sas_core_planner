@@ -140,6 +140,14 @@ public class Course {
     }
 
     /**
+     * Retrieves the unique identifier for the course.
+     * @return the unique identifier for the course.
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
      * Checks if two Course objects are equal.
      * @param o the object to compare with this Course.
      * @return true o is a Course and all fields are equal, false otherwise.
