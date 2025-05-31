@@ -1,6 +1,6 @@
 import org.example.CoreCode;
 import org.example.Course;
-import org.example.CourseRepository;
+import org.example.CourseSearchRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +15,10 @@ import java.util.List;
  * Integration tests for the CourseRepository class.
  */
 @SpringBootTest(classes ={org.example.CourseApplication.class})
-public class CourseRepositoryIntegrationTest {
+public class CourseSearchRepositoryIntegrationTest {
 
     @Autowired
-    private CourseRepository repository;
+    private CourseSearchRepository repository;
 
     @Autowired
     JdbcTemplate jdbcTemplate;

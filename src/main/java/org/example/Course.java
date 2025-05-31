@@ -28,6 +28,12 @@ public class Course {
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @CsvBindAndSplitByName(column = "Core Code", elementType = CoreCode.class, splitOn = ",")
+    @ManyToMany
+    @JoinTable(
+            name = "course_core",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "core_code")
+    )
     private List<CoreCode> coreCodes;
 
     @CsvBindByName(column = "Subject")
@@ -157,10 +163,6 @@ public class Course {
         if (this == o) return true;
         if (!(o instanceof Course course)) return false;
 
-        if (Float.compare(course.credits, credits) != 0) return false;
-        if (!courseNumber.equals(course.courseNumber)) return false;
-        if (!courseTitle.equals(course.courseTitle)) return false;
-        if (!coreCodes.equals(course.coreCodes)) return false;
-        return subject.equals(course.subject);
+        return id.equals(course.id);
     }
 }

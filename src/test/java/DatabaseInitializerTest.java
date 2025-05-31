@@ -1,6 +1,6 @@
 import org.example.CoreCode;
 import org.example.Course;
-import org.example.CourseRepository;
+import org.example.CourseSearchRepository;
 import org.example.DatabaseInitializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ public class DatabaseInitializerTest {
     private static final String[] MULTIPLE_FILES = {"src/test/resources/courses1.csv","src/test/resources/courses2.csv"};
 
     private final DatabaseInitializer databaseInitializer = new DatabaseInitializer();
-    private static final CourseRepository courseRepository = Mockito.mock(CourseRepository.class);
+    private static final CourseSearchRepository courseRepository = Mockito.mock(CourseSearchRepository.class);
 
     /**
      * Resets the course repository before each test.

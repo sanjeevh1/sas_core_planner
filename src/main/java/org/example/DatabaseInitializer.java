@@ -3,6 +3,7 @@ package org.example;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,9 @@ import java.util.List;
 @Configuration
 public class DatabaseInitializer {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
-    private CourseRepository repository;
+    private CourseSearchRepository repository;
+    @Autowired
+    private CourseRepository courseRepository;
 
     /**
      * Initializes the database with core goals and courses.
@@ -26,7 +29,7 @@ public class DatabaseInitializer {
      * @return a CommandLineRunner that initializes the database.
      */
     @Bean
-    public CommandLineRunner initDatabase(CourseRepository repository) { return (filePaths) -> {
+    public CommandLineRunner initDatabase(CourseSearchRepository repository) { return (filePaths) -> {
         this.repository = repository;
         repository.initializeTables();
         repository.loadCoreGoals();
@@ -46,9 +49,7 @@ public class DatabaseInitializer {
                     .withIgnoreLeadingWhiteSpace(true)
                     .build()
                     .parse();
-            for (Course course : courses) {
-                repository.addCourse(course);
-            }
+            courseRepository.saveAll(courses);
         } catch (FileNotFoundException e) {
             logger.error("File not found: {}", filePath, e);
         } catch (IOException e) {

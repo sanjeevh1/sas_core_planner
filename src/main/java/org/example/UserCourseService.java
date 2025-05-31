@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Service class for managing course-related operations.
+ * Service class for managing course-related operations for a given User.
  */
 @Service
-public class CourseService {
+public class UserCourseService {
     @Autowired
     private UserRepository userRepository;
 
@@ -23,7 +23,7 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Assuming User has a method to add a course
-        user.getCourses().add(course);
+        user.addCourse(course);
 
         // Save the updated user back to the repository
         userRepository.save(user);
@@ -39,7 +39,7 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Assuming User has a method to remove a course by ID
-        user.getCourses().removeIf(course -> course.getId().equals(courseId));
+        user.removeCourseById(courseId);
 
         // Save the updated user back to the repository
         userRepository.save(user);

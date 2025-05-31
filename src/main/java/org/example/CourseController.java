@@ -12,16 +12,16 @@ import java.util.List;
 @RequestMapping("/courses")
 public class CourseController {
 
-    private final CourseRepository courseRepository;
+    private final CourseSearchRepository courseRepository;
     @Autowired
-    private CourseService courseService;
+    private UserCourseService userCourseService;
 
     /**
      * Constructor for CourseController.
      * @param courseRepository the CourseRepository instance for database operations.
      */
     @Autowired
-    public CourseController(CourseRepository courseRepository) {
+    public CourseController(CourseSearchRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
@@ -43,7 +43,7 @@ public class CourseController {
      */
     @PostMapping("/add")
     public ResponseEntity<String> addCourseToUser(@RequestParam String username, @RequestBody Course course) {
-        courseService.addCourseToUser(username, course);
+        userCourseService.addCourseToUser(username, course);
         return ResponseEntity.ok("Course added successfully");
     }
 
@@ -55,7 +55,7 @@ public class CourseController {
      */
     @DeleteMapping("/remove/{courseId}")
     public ResponseEntity<String> removeCourseFromUser(@PathVariable Long courseId, @RequestParam String username) {
-        courseService.removeCourseFromUser(username, courseId);
+        userCourseService.removeCourseFromUser(username, courseId);
         return ResponseEntity.ok("Course removed successfully");
     }
 
@@ -65,7 +65,7 @@ public class CourseController {
      * @return a ResponseEntity containing a list of courses associated with the user, or no content if the user has no courses
      */
     public ResponseEntity<List<Course>> getUserCourses(@RequestParam String username) {
-        List<Course> courses = courseService.getUserCourses(username);
+        List<Course> courses = userCourseService.getUserCourses(username);
         if (courses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
