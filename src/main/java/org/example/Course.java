@@ -2,9 +2,7 @@ package org.example;
 
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,8 @@ public class Course {
     @CsvBindByName(column = "Credits")
     private float credits;
 
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
     @CsvBindAndSplitByName(column = "Core Code", elementType = CoreCode.class, splitOn = ",")
     private List<CoreCode> coreCodes;
 

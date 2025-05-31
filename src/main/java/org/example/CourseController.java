@@ -1,9 +1,7 @@
 package org.example;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -11,9 +9,12 @@ import java.util.List;
  * A controller class for handling course-related requests.
  */
 @RestController
+@RequestMapping("/courses")
 public class CourseController {
 
     private final CourseRepository courseRepository;
+    @Autowired
+    private CourseService courseService;
 
     /**
      * Constructor for CourseController.
@@ -34,4 +35,40 @@ public class CourseController {
         return courseRepository.getCourses(tokens);
     }
 
+    /**
+     * Adds a course to a user's list of courses.
+     * @param username the username of the user
+     * @param course the course to add
+     * @return a ResponseEntity indicating the result of the addition operation
+     */
+    @PostMapping("/add")
+    public ResponseEntity<String> addCourseToUser(@RequestParam String username, @RequestBody Course course) {
+        courseService.addCourseToUser(username, course);
+        return ResponseEntity.ok("Course added successfully");
+    }
+
+    /**
+     * Removes a course from a user's list of courses.
+     * @param username the username of the user
+     * @param courseId the ID of the course to remove
+     * @return a ResponseEntity indicating the result of the removal operation
+     */
+    @DeleteMapping("/remove/{courseId}")
+    public ResponseEntity<String> removeCourseFromUser(@PathVariable Long courseId, @RequestParam String username) {
+        courseService.removeCourseFromUser(username, courseId);
+        return ResponseEntity.ok("Course removed successfully");
+    }
+
+    /**
+     * Retrieves a user's list of courses.
+     * @param username the username of the user
+     * @return a ResponseEntity containing a list of courses associated with the user, or no content if the user has no courses
+     */
+    public ResponseEntity<List<Course>> getUserCourses(@RequestParam String username) {
+        List<Course> courses = courseService.getUserCourses(username);
+        if (courses.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(courses);
+    }
 }
