@@ -4,7 +4,6 @@ import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +13,8 @@ import java.util.List;
 public class Course {
 
     private @Id
-    @GeneratedValue Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
     @CsvBindByName(column = "Course ID")
     private String courseNumber;
@@ -25,42 +25,18 @@ public class Course {
     @CsvBindByName(column = "Credits")
     private float credits;
 
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = CoreCode.class)
     @CsvBindAndSplitByName(column = "Core Code", elementType = CoreCode.class, splitOn = ",")
-    @ManyToMany
     @JoinTable(
             name = "course_core",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "core_code")
+            joinColumns = @JoinColumn(name = "course_id")
     )
+    @Column(name = "core_code")
+    @Enumerated(EnumType.STRING)
     private List<CoreCode> coreCodes;
 
     @CsvBindByName(column = "Subject")
     private String subject;
-
-
-    /**
-     * Default constructor for the Course class.
-     */
-    public Course() {
-        // Default constructor
-    }
-    /**
-     * Constructor for the Course class.
-     * @param courseNumber the course number.
-     * @param title the course title.
-     * @param credits the number of credits for the course.
-     * @param coreCodes a list of core codes satisfied by the course.
-     * @param subject the subject of the course.
-     */
-    public Course(String courseNumber, String title, float credits, List<CoreCode> coreCodes, String subject) {
-        this.courseNumber = courseNumber;
-        this.courseTitle = title;
-        this.credits = credits;
-        this.coreCodes = coreCodes;
-        this.subject = subject;
-    }
 
     /**
      * Retrieves the course number.
@@ -127,14 +103,10 @@ public class Course {
     }
     /**
      * Sets the core codes for the course.
-     * @param coreString a comma-separated string of core codes.
+     * @param coreCodes a list of Core Codes.
      */
-    public void setCoreCodes(String coreString) {
-        String[] coreCodesArray = coreString.split(",");
-        this.coreCodes = new ArrayList<>();
-        for (String code : coreCodesArray) {
-            this.coreCodes.add(CoreCode.valueOf(code));
-        }
+    public void setCoreCodes(List<CoreCode> coreCodes) {
+        this.coreCodes = coreCodes;
     }
 
     /**

@@ -5,12 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -89,27 +85,19 @@ public class CourseSearchRepository {
         String courseTable = """
             CREATE TABLE IF NOT EXISTS course (
                 id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                course_number CHAR(10) NOT NULL UNIQUE,
+                course_number CHAR(10) NOT NULL,
                 course_title VARCHAR(255),
                 credits FLOAT,
                 subject VARCHAR(255)
             );
         """;
         jdbcTemplate.execute(courseTable);
-        String coreTable = """
-            CREATE TABLE IF NOT EXISTS core_code (
-                id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                code CHAR(3) NOT NULL UNIQUE,
-            );
-        """;
-        jdbcTemplate.execute(coreTable);
         String courseCore = """
             CREATE TABLE IF NOT EXISTS course_core (
                 course_id INT NOT NULL,
                 core_code CHAR(3) NOT NULL,
                 PRIMARY KEY (course_id, core_code),
-                FOREIGN KEY (course_id) REFERENCES course(id),
-                FOREIGN KEY (core_code) REFERENCES core_goal(code)
+                FOREIGN KEY (course_id) REFERENCES course(id)
             );
         """;
         jdbcTemplate.execute(courseCore);
@@ -131,40 +119,5 @@ public class CourseSearchRepository {
             );
         """;
         jdbcTemplate.execute(userCourse);
-    }
-
-    /**
-     * Loads the core goals into the database.
-     */
-    public void loadCoreGoals() {
-        String sql = "INSERT IGNORE INTO core_goal (code, goal) VALUES (?, ?)";
-        for (CoreCode coreCode : CoreCode.values()) {
-            jdbcTemplate.update(sql, coreCode.name(), coreCode.getGoal());
-        }
-    }
-
-    /**
-     * Inserts a course into the database.
-     * @param course the course to be inserted.
-     */
-    public void addCourse(Course course) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String insertCourse = "INSERT IGNORE INTO course (course_number, course_title, credits, core_codes, subject) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(insertCourse, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, course.getCourseNumber());
-            ps.setString(2, course.getCourseTitle());
-            ps.setFloat(3, course.getCredits());
-            ps.setString(4, String.join(",", course.getCoreCodes().stream().map(CoreCode::name).toArray(String[]::new)));
-            ps.setString(5, course.getSubject());
-            return ps;
-        }, keyHolder);
-        if (keyHolder.getKey() != null) {
-            int courseId = keyHolder.getKey().intValue();
-            String coreQuery = "INSERT INTO course_core (course_id, core_code) VALUES (?, ?)";
-            for (CoreCode coreCode : course.getCoreCodes()) {
-                jdbcTemplate.update(coreQuery, courseId, coreCode.name());
-            }
-        }
     }
 }

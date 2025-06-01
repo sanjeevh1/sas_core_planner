@@ -19,7 +19,6 @@ import java.util.List;
 @Configuration
 public class DatabaseInitializer {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
-    private CourseSearchRepository repository;
     @Autowired
     private CourseRepository courseRepository;
 
@@ -30,9 +29,7 @@ public class DatabaseInitializer {
      */
     @Bean
     public CommandLineRunner initDatabase(CourseSearchRepository repository) { return (filePaths) -> {
-        this.repository = repository;
         repository.initializeTables();
-        repository.loadCoreGoals();
         for(String path : filePaths) {
             loadCourses(path);
         }
