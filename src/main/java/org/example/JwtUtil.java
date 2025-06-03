@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
     private static final String SECRET_KEY = "secret";
-    private static final SecretKey KEY = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private static final SecretKey KEY = Jwts.SIG.HS256.key().build();
 
     /**
      * Extracts the username from the JWT token.
