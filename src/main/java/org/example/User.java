@@ -1,6 +1,7 @@
 package org.example;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
@@ -8,14 +9,25 @@ import java.util.List;
  * Represents a user in the system.
  */
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Getter
+    @Setter
     @Column(unique = true, nullable = false)
     private String username;
+
+    @Getter
+    @Setter
     @Column(nullable = false)
     private String password;
+
+    @Getter
     @ManyToMany
     @JoinTable(
         name = "user_courses",
@@ -23,46 +35,6 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "course_id")
     )
     private List<Course> courses;
-
-    /**
-     * Retrieves the username of the user.
-     * @return the username of the user
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Sets the username for the user.
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * Retrieves the password of the user.
-     * @return the password of the user
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Sets the password for the user.
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Retrieves the list of courses associated with the user.
-     * @return the list of courses
-     */
-    public List<Course> getCourses() {
-        return courses;
-    }
 
     /**
      * Adds a course to the user's list of courses.
