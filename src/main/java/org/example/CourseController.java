@@ -12,17 +12,18 @@ import java.util.List;
 @RequestMapping("/courses")
 public class CourseController {
 
-    private final CourseSearchRepository courseRepository;
+    private final CourseSearchRepository courseSearchRepository;
+
     @Autowired
-    private UserCourseService userCourseService;
+    private UserRepository userRepository;
 
     /**
      * Constructor for CourseController.
-     * @param courseRepository the CourseRepository instance for database operations.
+     * @param courseSearchRepository the CourseRepository instance for database operations.
      */
     @Autowired
-    public CourseController(CourseSearchRepository courseRepository) {
-        this.courseRepository = courseRepository;
+    public CourseController(CourseSearchRepository courseSearchRepository) {
+        this.courseSearchRepository = courseSearchRepository;
     }
 
     /**
@@ -30,9 +31,9 @@ public class CourseController {
      * @param tokens a list of core codes and boolean operators (AND, OR).
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
-    @GetMapping("/courses")
+    @GetMapping("/course-list")
     public List<Course> courses(@RequestParam("tokens") List<String> tokens) {
-        return courseRepository.getCourses(tokens);
+        return courseSearchRepository.getCourses(tokens);
     }
 
     /**
@@ -43,7 +44,9 @@ public class CourseController {
      */
     @PostMapping("/add")
     public ResponseEntity<String> addCourseToUser(@RequestParam String username, @RequestBody Course course) {
-        userCourseService.addCourseToUser(username, course);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.addCourse(course);
         return ResponseEntity.ok("Course added successfully");
     }
 
@@ -55,7 +58,9 @@ public class CourseController {
      */
     @DeleteMapping("/remove/{courseId}")
     public ResponseEntity<String> removeCourseFromUser(@PathVariable Long courseId, @RequestParam String username) {
-        userCourseService.removeCourseFromUser(username, courseId);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.removeCourseById(courseId);
         return ResponseEntity.ok("Course removed successfully");
     }
 
@@ -64,8 +69,11 @@ public class CourseController {
      * @param username the username of the user
      * @return a ResponseEntity containing a list of courses associated with the user, or no content if the user has no courses
      */
+    @GetMapping("/user-courses")
     public ResponseEntity<List<Course>> getUserCourses(@RequestParam String username) {
-        List<Course> courses = userCourseService.getUserCourses(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Course> courses = user.getCourses();
         if (courses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
