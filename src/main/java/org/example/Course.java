@@ -29,7 +29,7 @@ public class Course {
     @CsvBindByName(column = "Credits")
     private float credits;
 
-    @ElementCollection(targetClass = CoreCode.class)
+    @ElementCollection(targetClass = CoreCode.class, fetch = FetchType.EAGER)
     @CsvBindAndSplitByName(column = "Core Code", elementType = CoreCode.class, splitOn = ",")
     @JoinTable(
             name = "course_core",

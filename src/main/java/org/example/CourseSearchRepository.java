@@ -20,6 +20,9 @@ public class CourseSearchRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private CourseRepository courseRepository;
+
     /**
      * Retrieves a list of courses based on the provided search tokens.
      * @param tokens a list of core codes and boolean operators (AND, OR).
@@ -31,7 +34,8 @@ public class CourseSearchRepository {
             return null;
         }
         String query = getQuery(tokens);
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Course.class));
+        List<Long> courseIds = jdbcTemplate.queryForList(query, Long.class);
+        return courseRepository.findAllById(courseIds);
     }
 
     /**
@@ -64,7 +68,7 @@ public class CourseSearchRepository {
      * @return a SQL query string to obtain courses based on the given tokens.
      */
     private static String getQuery(List<String> tokens) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM course WHERE course.id IN (");
+        StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT course_id FROM course_core WHERE course_id IN (");
         for (String token: tokens) {
             if (token.equals("OR")) {
                 queryBuilder.append(" UNION ");
