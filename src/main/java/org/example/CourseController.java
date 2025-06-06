@@ -1,8 +1,11 @@
 package org.example;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,9 @@ public class CourseController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     /**
      * Constructor for CourseController.
@@ -40,26 +46,33 @@ public class CourseController {
 
     /**
      * Adds a course to a user's list of courses.
-     * @param username the username of the user
-     * @param course the course to add
+     * @param courseId the id of the course to add
      * @return a ResponseEntity indicating the result of the addition operation
      */
+    @Transactional
     @PostMapping("/add")
-    public ResponseEntity<String> addCourseToUser(@RequestParam String username, @RequestBody Course course) {
+    public ResponseEntity<String> addCourseToUser(@RequestBody Long courseId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.addCourse(course);
+        if(courseRepository.findById(courseId).isEmpty()) {
+            return ResponseEntity.badRequest().body("Course not found");
+        }
+        user.addCourse(courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found")));
         return ResponseEntity.ok("Course added successfully");
     }
 
     /**
      * Removes a course from a user's list of courses.
-     * @param username the username of the user
      * @param courseId the ID of the course to remove
      * @return a ResponseEntity indicating the result of the removal operation
      */
     @DeleteMapping("/remove/{courseId}")
-    public ResponseEntity<String> removeCourseFromUser(@PathVariable Long courseId, @RequestParam String username) {
+    @Transactional
+    public ResponseEntity<String> removeCourseFromUser(@PathVariable Long courseId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.removeCourseById(courseId);
@@ -68,11 +81,13 @@ public class CourseController {
 
     /**
      * Retrieves a user's list of courses.
-     * @param username the username of the user
      * @return a ResponseEntity containing a list of courses associated with the user, or no content if the user has no courses
      */
+    @Transactional
     @GetMapping("/user-courses")
-    public ResponseEntity<List<Course>> getUserCourses(@RequestParam String username) {
+    public ResponseEntity<List<Course>> getUserCourses() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Course> courses = user.getCourses();
