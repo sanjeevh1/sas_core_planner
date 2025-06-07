@@ -50,8 +50,8 @@ public class CourseController {
      * @return a ResponseEntity indicating the result of the addition operation
      */
     @Transactional
-    @PostMapping("/add")
-    public ResponseEntity<String> addCourseToUser(@RequestBody Long courseId) {
+    @PostMapping("/add/{id}")
+    public ResponseEntity<String> addCourseToUser(@PathVariable("id") Long courseId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
@@ -68,9 +68,9 @@ public class CourseController {
      * @param courseId the ID of the course to remove
      * @return a ResponseEntity indicating the result of the removal operation
      */
-    @DeleteMapping("/remove/{courseId}")
+    @DeleteMapping("/remove/{id}")
     @Transactional
-    public ResponseEntity<String> removeCourseFromUser(@PathVariable Long courseId) {
+    public ResponseEntity<String> removeCourseFromUser(@PathVariable("id") Long courseId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
