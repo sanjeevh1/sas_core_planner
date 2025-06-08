@@ -40,7 +40,7 @@ public class CourseController {
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
     @GetMapping("/course-list")
-    public List<Course> courses(@RequestParam("tokens") List<String> tokens) {
+    public List<Course> courses(@RequestBody List<List<CoreCode>> tokens) {
         return courseSearchRepository.getCourses(tokens);
     }
 

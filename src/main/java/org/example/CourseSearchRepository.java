@@ -1,9 +1,12 @@
 package org.example;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -23,44 +26,36 @@ public class CourseSearchRepository {
     @Autowired
     private CourseRepository courseRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     /**
      * Retrieves a list of courses based on the provided search tokens.
      * @param tokens a list of core codes and boolean operators (AND, OR).
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
-    public List<Course> getCourses(List<String> tokens) {
-        if(!validateTokens(tokens)) {
-            logger.error("Invalid tokens provided: {}", tokens);
-            return null;
-        }
-        String query = getQuery(tokens);
-        List<Long> courseIds = jdbcTemplate.queryForList(query, Long.class);
-        return courseRepository.findAllById(courseIds);
-    }
-
-    /**
-     * Validates the provided tokens to ensure they are in the correct format.
-     * @param tokens a list of tokens to validate.
-     * @return true if the tokens are valid, false otherwise.
-     */
-    private static boolean validateTokens(List<String> tokens) {
-        for (int i = 0; i < tokens.size(); i++) {
-            if((i % 2 == 0)) {
-                boolean isCode = false;
-                for(CoreCode code : CoreCode.values()) {
-                    if (tokens.get(i).equals(code.name())) {
-                        isCode = true;
-                        break;
-                    }
+    public List<Course> getCourses(List<List<CoreCode>> tokens) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        QCourse course = QCourse.course;
+        BooleanExpression orExpression = null;
+        for(List<CoreCode> tokenList : tokens) {
+            BooleanExpression andExpression = null;
+            for(CoreCode token : tokenList) {
+                if(andExpression == null) {
+                    andExpression = course.coreCodes.contains(token);
+                } else {
+                    andExpression = andExpression.and(course.coreCodes.contains(token));
                 }
-                if(!isCode) {
-                    return false;
-                }
-            } else if(!tokens.get(i).equals("AND") && !tokens.get(i).equals("OR")) {
-                return false;
+            }
+            if(orExpression == null) {
+                orExpression = andExpression;
+            } else {
+                orExpression = orExpression.or(andExpression);
             }
         }
-        return true;
+        return queryFactory.selectFrom(course)
+                .where(orExpression)
+                .fetch();
     }
 
     /**
