@@ -18,8 +18,8 @@ public class CourseSearchRepository {
     private EntityManager entityManager;
 
     /**
-     * Retrieves a list of courses based on the provided search tokens.
-     * @param cores a list of core codes and boolean operators (AND, OR).
+     * Retrieves a list of courses based on the provided search criteria.
+     * @param cores a list sets of core codes to search for.
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
     public List<Course> getCourses(List<List<CoreCode>> cores) {
@@ -29,10 +29,11 @@ public class CourseSearchRepository {
         for(List<CoreCode> coreList : cores) {
             BooleanExpression andExpression = null;
             for(CoreCode code : coreList) {
+                BooleanExpression expression = course.coreCodes.contains(code);
                 if(andExpression == null) {
-                    andExpression = course.coreCodes.contains(code);
+                    andExpression = expression;
                 } else {
-                    andExpression = andExpression.and(course.coreCodes.contains(code));
+                    andExpression = andExpression.and(expression);
                 }
             }
             if(orExpression == null) {
