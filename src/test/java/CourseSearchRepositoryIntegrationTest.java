@@ -32,8 +32,6 @@ public class CourseSearchRepositoryIntegrationTest {
         jdbcTemplate.execute("DELETE FROM course_core;");
         jdbcTemplate.execute("DELETE FROM course;");
         jdbcTemplate.execute("DELETE FROM core_goal;");
-        repository.loadCoreGoals();
-        repository.initializeTables();
     }
 
     /**

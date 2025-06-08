@@ -29,7 +29,6 @@ public class DatabaseInitializer {
      */
     @Bean
     public CommandLineRunner initDatabase(CourseSearchRepository repository) { return (filePaths) -> {
-        repository.initializeTables();
         for(String path : filePaths) {
             loadCourses(path);
         }
