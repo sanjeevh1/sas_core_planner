@@ -19,20 +19,20 @@ public class CourseSearchRepository {
 
     /**
      * Retrieves a list of courses based on the provided search tokens.
-     * @param tokens a list of core codes and boolean operators (AND, OR).
+     * @param cores a list of core codes and boolean operators (AND, OR).
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
-    public List<Course> getCourses(List<List<CoreCode>> tokens) {
+    public List<Course> getCourses(List<List<CoreCode>> cores) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QCourse course = QCourse.course;
         BooleanExpression orExpression = null;
-        for(List<CoreCode> tokenList : tokens) {
+        for(List<CoreCode> coreList : cores) {
             BooleanExpression andExpression = null;
-            for(CoreCode token : tokenList) {
+            for(CoreCode code : coreList) {
                 if(andExpression == null) {
-                    andExpression = course.coreCodes.contains(token);
+                    andExpression = course.coreCodes.contains(code);
                 } else {
-                    andExpression = andExpression.and(course.coreCodes.contains(token));
+                    andExpression = andExpression.and(course.coreCodes.contains(code));
                 }
             }
             if(orExpression == null) {

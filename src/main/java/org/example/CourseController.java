@@ -36,12 +36,12 @@ public class CourseController {
 
     /**
      * Retrieves a list of courses based on the provided search tokens.
-     * @param tokens a list of core codes and boolean operators (AND, OR).
+     * @param cores a list of core codes and boolean operators (AND, OR).
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
     @GetMapping("/course-list")
-    public List<Course> courses(@RequestBody List<List<CoreCode>> tokens) {
-        return courseSearchRepository.getCourses(tokens);
+    public List<Course> courses(@RequestBody List<List<CoreCode>> cores) {
+        return courseSearchRepository.getCourses(cores);
     }
 
     /**
