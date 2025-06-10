@@ -31,7 +31,7 @@ public class DatabaseInitializerTest {
     }
 
     /**
-     * Tests the initialization of the database with multiple courses from a CSV file.
+     * Tests the initialization of the database with multiple getCourses from a CSV file.
      * @throws Exception if an error occurs during the test.
      */
     @Test

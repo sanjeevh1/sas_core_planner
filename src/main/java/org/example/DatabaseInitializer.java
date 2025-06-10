@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Configuration class for initializing the database with core goals and courses.
+ * Configuration class for initializing the database with core goals and getCourses.
  */
 @Configuration
 public class DatabaseInitializer {
@@ -23,7 +23,7 @@ public class DatabaseInitializer {
     private CourseRepository courseRepository;
 
     /**
-     * Initializes the database with core goals and courses.
+     * Initializes the database with core goals and getCourses.
      * @param repository the CourseRepository instance for database operations.
      * @return a CommandLineRunner that initializes the database.
      */
@@ -35,7 +35,7 @@ public class DatabaseInitializer {
     };}
 
     /**
-     * Loads courses from a CSV file into the repository.
+     * Loads getCourses from a CSV file into the repository.
      * @param filePath the path to the CSV file containing course data.
      */
     private void loadCourses(String filePath) {

@@ -1,7 +1,5 @@
 package org.example;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -40,12 +38,13 @@ public class CourseController {
      * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
      */
     @GetMapping("/course-list")
-    public List<Course> courses(@RequestBody List<List<CoreCode>> cores) {
-        return courseSearchRepository.getCourses(cores);
+    public ResponseEntity<List<Course>> getCourses(@RequestBody List<List<CoreCode>> cores) {
+        List<Course> courses = courseSearchRepository.getCourses(cores);
+        return ResponseEntity.ok(courses);
     }
 
     /**
-     * Adds a course to a user's list of courses.
+     * Adds a course to a user's list of getCourses.
      * @param courseId the id of the course to add
      * @return a ResponseEntity indicating the result of the addition operation
      */
@@ -60,11 +59,12 @@ public class CourseController {
             return ResponseEntity.badRequest().body("Course not found");
         }
         user.addCourse(courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found")));
+        userRepository.save(user);
         return ResponseEntity.ok("Course added successfully");
     }
 
     /**
-     * Removes a course from a user's list of courses.
+     * Removes a course from a user's list of getCourses.
      * @param courseId the ID of the course to remove
      * @return a ResponseEntity indicating the result of the removal operation
      */
@@ -76,12 +76,13 @@ public class CourseController {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.removeCourseById(courseId);
+        userRepository.save(user);
         return ResponseEntity.ok("Course removed successfully");
     }
 
     /**
-     * Retrieves a user's list of courses.
-     * @return a ResponseEntity containing a list of courses associated with the user, or no content if the user has no courses
+     * Retrieves a user's list of getCourses.
+     * @return a ResponseEntity containing a list of getCourses associated with the user, or no content if the user has no getCourses
      */
     @Transactional
     @GetMapping("/user-courses")
@@ -91,9 +92,6 @@ public class CourseController {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Course> courses = user.getCourses();
-        if (courses.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(courses);
     }
 }

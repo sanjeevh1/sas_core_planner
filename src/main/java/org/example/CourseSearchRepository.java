@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * A repository class for handling database operations related to courses.
+ * A repository class for handling database operations related to getCourses.
  */
 @Repository
 public class CourseSearchRepository {
@@ -18,9 +18,9 @@ public class CourseSearchRepository {
     private EntityManager entityManager;
 
     /**
-     * Retrieves a list of courses based on the provided search criteria.
+     * Retrieves a list of getCourses based on the provided search criteria.
      * @param cores a list sets of core codes to search for.
-     * @return a list of courses that match the search criteria, or null if the program fails to connect to the database.
+     * @return a list of getCourses that match the search criteria, or null if the program fails to connect to the database.
      */
     public List<Course> getCourses(List<List<CoreCode>> cores) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);

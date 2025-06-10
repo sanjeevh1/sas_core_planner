@@ -25,7 +25,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_course",
         joinColumns = @JoinColumn(name = "user_id"),
@@ -34,7 +34,7 @@ public class User {
     private List<Course> courses;
 
     /**
-     * Adds a course to the user's list of courses.
+     * Adds a course to the user's list of getCourses.
      * @param course the course to add
      */
     public void addCourse(Course course) {
@@ -42,10 +42,19 @@ public class User {
     }
 
     /**
-     * Removes a course from the user's list of courses.
+     * Removes a course from the user's list of getCourses.
      * @param id the id of the course to remove
      */
     public void removeCourseById(Long id) {
         this.courses.removeIf(course -> course.getId().equals(id));
+    }
+
+    /**
+     * Checks if the user is registered for a specific course.
+     * @param courseId the ID of the course to check
+     * @return true if the user is registered for the course, false otherwise
+     */
+    public boolean isRegistered(Long courseId) {
+        return courses.stream().anyMatch(course -> course.getId().equals(courseId));
     }
 }

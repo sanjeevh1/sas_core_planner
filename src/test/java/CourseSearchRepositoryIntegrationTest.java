@@ -63,7 +63,7 @@ public class CourseSearchRepositoryIntegrationTest {
     }
 
     /**
-     * Tests retrieving courses with a single core code.
+     * Tests retrieving getCourses with a single core code.
      */
     @Test
     public void testGetCoursesWithOneCore() {
@@ -77,7 +77,7 @@ public class CourseSearchRepositoryIntegrationTest {
     }
 
     /**
-     * Tests retrieving courses with multiple core codes, ensuring that only courses satisfying at least one of the core codes are returned.
+     * Tests retrieving getCourses with multiple core codes, ensuring that only getCourses satisfying at least one of the core codes are returned.
      */
     @Test
     public void testGetCoursesWithMultipleCores() {
@@ -94,7 +94,7 @@ public class CourseSearchRepositoryIntegrationTest {
     }
 
     /**
-     * Tests retrieving courses with an AND token.
+     * Tests retrieving getCourses with an AND token.
      */
     @Test
     public void testGetCoursesWithAndToken() {
@@ -111,7 +111,7 @@ public class CourseSearchRepositoryIntegrationTest {
     }
 
     /**
-     * Tests retrieving courses with an OR token.
+     * Tests retrieving getCourses with an OR token.
      */
     @Test
     public void testGetCoursesWithOrToken() {
@@ -132,7 +132,7 @@ public class CourseSearchRepositoryIntegrationTest {
     }
 
     /**
-     * Tests retrieving courses with a combination of AND and OR tokens.
+     * Tests retrieving getCourses with a combination of AND and OR tokens.
      * This test ensures that the repository can handle complex queries with multiple core codes and boolean operators.
      */
     @Test
