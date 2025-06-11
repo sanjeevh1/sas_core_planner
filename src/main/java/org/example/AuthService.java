@@ -63,4 +63,14 @@ public class AuthService {
         return jwtUtil.generateToken(userDetails);
     }
 
+    /**
+     * Checks if a user with the given username already exists.
+     * @param username the username to check
+     * @return true if the user exists, false otherwise
+     */
+    @Transactional
+    public boolean exists(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
 }

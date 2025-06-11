@@ -23,6 +23,10 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
+        String username = authenticationRequest.getUsername();
+        if (authService.exists(username)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
+        }
         authService.register(authenticationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
