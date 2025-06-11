@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * UserController handles user-related requests, including adding and removing courses,
+ * and retrieving a user's list of courses.
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {

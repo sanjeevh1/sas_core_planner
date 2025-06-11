@@ -18,7 +18,9 @@ import java.util.List;
  */
 @Configuration
 public class DatabaseInitializer {
+
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
+
     @Autowired
     private CourseRepository courseRepository;
 

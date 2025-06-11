@@ -34,18 +34,18 @@ public class AuthService {
 
     /**
      * Registers up a new user with the provided username and password.
+     *
      * @param authenticationRequest the authentication request containing username and password
-     * @return the created User object
      */
     @Transactional
-    public User register(AuthenticationRequest authenticationRequest) {
+    public void register(AuthenticationRequest authenticationRequest) {
         User user = new User();
         String username = authenticationRequest.getUsername();
         user.setUsername(username);
         String password = authenticationRequest.getPassword();
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     /**

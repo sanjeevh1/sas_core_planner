@@ -1,6 +1,8 @@
 package org.example;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +20,43 @@ public class CourseService {
     /**
      * Retrieves a list of getCourses based on the provided search criteria.
      * @param cores a list sets of core codes to search for.
-     * @return a list of getCourses that match the search criteria, or null if the program fails to connect to the database.
+     * @return a list of getCourses that match the search criteria.
      */
+    @Transactional
     public List<Course> getCourses(List<List<CoreCode>> cores) {
-        QCourse course = QCourse.course;
-        BooleanExpression orExpression = null;
+        BooleanExpression expression = getExpression(cores);
+        return courseRepository.findAll(expression);
+    }
+
+    /**
+     * Constructs a BooleanExpression that combines multiple CoreCode lists with OR logic.
+     * @param cores a list of lists of CoreCode objects to combine
+     * @return a BooleanExpression that represents the OR condition for the provided CoreCode lists
+     */
+    private BooleanExpression getExpression(List<List<CoreCode>> cores) {
+        BooleanExpression orExpression = Expressions.FALSE;
         for(List<CoreCode> coreList : cores) {
-            BooleanExpression andExpression = null;
-            for(CoreCode code : coreList) {
-                BooleanExpression expression = course.coreCodes.contains(code);
-                if(andExpression == null) {
-                    andExpression = expression;
-                } else {
-                    andExpression = andExpression.and(expression);
-                }
-            }
+            BooleanExpression andExpression = getAndExpression(coreList);
             if(orExpression == null) {
                 orExpression = andExpression;
             } else {
                 orExpression = orExpression.or(andExpression);
             }
         }
-        if(orExpression == null) {
-            return null; // No search criteria provided
+        return orExpression;
+    }
+
+    /**
+     * Constructs a BooleanExpression that combines multiple CoreCode conditions with AND logic.
+     * @param coreList a list of CoreCode objects to combine
+     * @return a BooleanExpression that represents the AND condition for the provided CoreCode list
+     */
+    private BooleanExpression getAndExpression(List<CoreCode> coreList) {
+        BooleanExpression andExpression = Expressions.TRUE;
+        for(CoreCode code : coreList) {
+            BooleanExpression expression = QCourse.course.coreCodes.contains(code);
+            andExpression = andExpression.and(expression);
         }
-        return courseRepository.findAll(orExpression);
+        return andExpression;
     }
 }

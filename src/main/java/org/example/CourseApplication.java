@@ -3,14 +3,12 @@ package org.example;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-
 /**
  * Main class for the Spring Boot application.
  */
 @SpringBootApplication
 public class CourseApplication {
+
     private static final String[] COURSE_FILES = {
             "src/main/resources/AHo.csv",
             "src/main/resources/AHp.csv",
@@ -27,6 +25,7 @@ public class CourseApplication {
             "src/main/resources/WCd.csv",
             "src/main/resources/WCr.csv"
     };
+
     /**
      * Main method to run the Spring Boot application.
      * @param args command line arguments.
