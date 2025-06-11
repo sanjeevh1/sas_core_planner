@@ -1,6 +1,7 @@
 package org.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,9 @@ public class AuthController {
      * @return a ResponseEntity indicating the result of the registration operation
      */
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
         authService.register(authenticationRequest);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**

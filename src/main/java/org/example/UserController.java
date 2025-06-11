@@ -1,6 +1,7 @@
 package org.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,18 +25,18 @@ public class UserController {
      * @return a ResponseEntity indicating the result of the addition operation
      */
     @PostMapping("/add/{id}")
-    public ResponseEntity<String> addCourseById(@PathVariable("id") Long courseId) {
+    public ResponseEntity<?> addCourseById(@PathVariable("id") Long courseId) {
         User user = userService.getCurrentUser();
         Optional<Course> courseOptional = userService.getCourse(courseId);
         if(courseOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("Course not found");
+            return ResponseEntity.notFound().build();
         }
         Course course = courseOptional.get();
         if(user.isRegistered(courseId)) {
-            return ResponseEntity.badRequest().body("User is already registered for this course");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User is already registered for this course");
         }
         userService.addCourseToUser(user, course);
-        return ResponseEntity.ok("Course added successfully");
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -44,13 +45,13 @@ public class UserController {
      * @return a ResponseEntity indicating the result of the removal operation
      */
     @DeleteMapping("/remove/{id}")
-    public ResponseEntity<String> removeCourseById(@PathVariable("id") Long courseId) {
+    public ResponseEntity<?> removeCourseById(@PathVariable("id") Long courseId) {
         User user = userService.getCurrentUser();
         if(!user.isRegistered(courseId)) {
-            return ResponseEntity.badRequest().body("User is not registered for this course");
+            return ResponseEntity.notFound().build();
         }
         userService.removeCourseFromUser(user, courseId);
-        return ResponseEntity.ok("Course removed successfully");
+        return ResponseEntity.noContent().build();
     }
 
     /**
