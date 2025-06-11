@@ -39,6 +39,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthenticationRequest authenticationRequest) {
         String token = authService.getToken(authenticationRequest);
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         AuthResponse response = new AuthResponse(token);
         return ResponseEntity.ok(response);
     }

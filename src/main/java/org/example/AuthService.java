@@ -51,13 +51,17 @@ public class AuthService {
     /**
      * Generates a JWT token for the authenticated user.
      * @param authenticationRequest the authentication request containing username and password
-     * @return the generated JWT token
+     * @return the generated JWT token, or null if authentication fails.
      */
     public String getToken(AuthenticationRequest authenticationRequest) {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
-        authenticationManager.authenticate(authToken);
+        try {
+            authenticationManager.authenticate(authToken);
+        } catch (Exception e) {
+            return null;
+        }
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         JwtUtil jwtUtil = new JwtUtil();
         return jwtUtil.generateToken(userDetails);
