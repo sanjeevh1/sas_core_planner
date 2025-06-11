@@ -16,7 +16,6 @@ import java.util.function.Function;
  */
 @Service
 public class JwtUtil {
-    private static final String SECRET_KEY = "secret";
     private static final SecretKey KEY = Jwts.SIG.HS256.key().build();
 
     /**

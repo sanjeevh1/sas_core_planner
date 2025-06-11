@@ -17,7 +17,7 @@ import java.util.List;
  * Configuration class for initializing the database with core goals and getCourses.
  */
 @Configuration
-public class DatabaseInitializer {
+public class DatabaseInitializer implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
 
@@ -26,15 +26,23 @@ public class DatabaseInitializer {
 
     /**
      * Initializes the database with core goals and getCourses.
-     * @param repository the CourseRepository instance for database operations.
      * @return a CommandLineRunner that initializes the database.
      */
     @Bean
-    public CommandLineRunner initDatabase(CourseService repository) { return (filePaths) -> {
-        for(String path : filePaths) {
-            loadCourses(path);
+    public CommandLineRunner initDatabase() {
+        return this;
+    }
+
+    /**
+     * Runs the database initialization with the provided file paths.
+     * @param filePaths the paths to the CSV files containing course data.
+     * @throws Exception if an error occurs while reading the files.
+     */
+    public void run(String... filePaths) throws Exception {
+        for (String filePath : filePaths) {
+            loadCourses(filePath);
         }
-    };}
+    }
 
     /**
      * Loads getCourses from a CSV file into the repository.

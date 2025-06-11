@@ -38,7 +38,7 @@ public class DatabaseInitializerTest {
     public void multipleCourses() throws Exception {
         String[] filePaths = {MULTIPLE_COURSES_PATHNAME};
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
-        databaseInitializer.initDatabase(courseRepository).run(filePaths);
+        databaseInitializer.initDatabase().run(filePaths);
         Mockito.verify(courseRepository, Mockito.times(2)).addCourse(courseCaptor.capture());
         List<Course> capturedCourses = courseCaptor.getAllValues();
 
@@ -58,7 +58,7 @@ public class DatabaseInitializerTest {
     public void multipleCores() throws Exception {
         String[] filePaths = {MULTIPLE_CORES_PATHNAME};
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
-        databaseInitializer.initDatabase(courseRepository).run(filePaths);
+        databaseInitializer.initDatabase().run(filePaths);
         Mockito.verify(courseRepository, Mockito.times(1)).addCourse(courseCaptor.capture());
         List<CoreCode> expectedCores = new ArrayList<>(List.of(CoreCode.CCO, CoreCode.AHo, CoreCode.WCr));
         Course expectedCourse = new Course("00:000:000", "COURSE TITLE 1", 3, expectedCores, "Subject 1");
@@ -72,7 +72,7 @@ public class DatabaseInitializerTest {
     @Test
     public void multipleFiles() throws Exception {
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
-        databaseInitializer.initDatabase(courseRepository).run(MULTIPLE_FILES);
+        databaseInitializer.initDatabase().run(MULTIPLE_FILES);
         Mockito.verify(courseRepository, Mockito.times(2)).addCourse(courseCaptor.capture());
         List<Course> capturedCourses = courseCaptor.getAllValues();
 
