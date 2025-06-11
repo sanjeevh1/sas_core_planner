@@ -1,5 +1,6 @@
 package org.example;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 /**
- * Service class for loading user details from the database.
+ * CustomUserDetailsService is a service that implements UserDetailsService to load user-specific data.
+ * It retrieves user information from the UserRepository based on the username.
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -18,14 +20,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /**
      * Loads user details by username.
-     * @param username the username of the user
+     * @param username the username of the user to load
      * @return UserDetails object containing user information
-     * @throws UsernameNotFoundException if the user is not found
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    @Transactional
+    public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
+        String password = user.getPassword();
+        return new org.springframework.security.core.userdetails.User(username, password, new ArrayList<>());
     }
 }

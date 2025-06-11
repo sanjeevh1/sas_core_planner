@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing user operations related to courses.
+ */
 @Service
 public class UserService {
 

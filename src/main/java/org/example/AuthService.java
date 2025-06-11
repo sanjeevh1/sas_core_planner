@@ -1,33 +1,43 @@
 package org.example;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 /**
  * Service class for managing signup/login.
  */
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthService {
+
     @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @PostConstruct
+    public void init() throws Exception {
+        this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
+    }
 
     /**
      * Registers up a new user with the provided username and password.
      * @param authenticationRequest the authentication request containing username and password
      * @return the created User object
      */
+    @Transactional
     public User register(AuthenticationRequest authenticationRequest) {
         User user = new User();
         String username = authenticationRequest.getUsername();
@@ -43,26 +53,14 @@ public class AuthService implements UserDetailsService {
      * @param authenticationRequest the authentication request containing username and password
      * @return the generated JWT token
      */
-    public String getToken(AuthenticationRequest authenticationRequest) {
+    public String getToken(AuthenticationRequest authenticationRequest) throws Exception {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
         authenticationManager.authenticate(authToken);
-        UserDetails userDetails = loadUserByUsername(username);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         JwtUtil jwtUtil = new JwtUtil();
         return jwtUtil.generateToken(userDetails);
     }
 
-    /**
-     * Retrieves a user's details by their username.
-     * @param username the username of the user to retrieve
-     * @return the UserDetails object if found, otherwise throws an exception
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-        String password = user.getPassword();
-        return new org.springframework.security.core.userdetails.User(username, password, new ArrayList<>());
-    }
 }
