@@ -33,8 +33,9 @@ public class AuthController {
      * @throws Exception if authentication fails
      */
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         String token = authService.getToken(authenticationRequest);
-        return ResponseEntity.ok(token);
+        AuthResponse response = new AuthResponse(token);
+        return ResponseEntity.ok(response);
     }
 }
