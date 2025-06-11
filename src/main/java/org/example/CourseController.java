@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/courses")
 public class CourseController {
 
-    private final CourseSearchRepository courseSearchRepository;
+    private final CourseService courseService;
 
     @Autowired
     private UserRepository userRepository;
@@ -25,11 +25,11 @@ public class CourseController {
 
     /**
      * Constructor for CourseController.
-     * @param courseSearchRepository the CourseRepository instance for database operations.
+     * @param courseService the CourseRepository instance for database operations.
      */
     @Autowired
-    public CourseController(CourseSearchRepository courseSearchRepository) {
-        this.courseSearchRepository = courseSearchRepository;
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
     }
 
     /**
@@ -39,7 +39,7 @@ public class CourseController {
      */
     @GetMapping("/course-list")
     public ResponseEntity<List<Course>> getCourses(@RequestBody List<List<CoreCode>> cores) {
-        List<Course> courses = courseSearchRepository.getCourses(cores);
+        List<Course> courses = courseService.getCourses(cores);
         return ResponseEntity.ok(courses);
     }
 

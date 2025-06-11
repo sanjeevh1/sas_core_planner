@@ -1,6 +1,6 @@
 import org.example.CoreCode;
 import org.example.Course;
-import org.example.CourseSearchRepository;
+import org.example.CourseService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * Unit tests for the CourseRepository class.
  */
-public class CourseSearchRepositoryTest {
+public class CourseServiceTest {
 
     @Mock
     private JdbcTemplate jdbcTemplate;
 
     @InjectMocks
-    private CourseSearchRepository repository;
+    private CourseService repository;
 
     private AutoCloseable mocks;
 

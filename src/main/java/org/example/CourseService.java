@@ -1,21 +1,19 @@
 package org.example;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * A repository class for handling database operations related to getCourses.
+ * A service class that provides methods to search for courses based on core codes.
  */
-@Repository
-public class CourseSearchRepository {
+@Service
+public class CourseService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private CourseRepository courseRepository;
 
     /**
      * Retrieves a list of getCourses based on the provided search criteria.
@@ -23,7 +21,6 @@ public class CourseSearchRepository {
      * @return a list of getCourses that match the search criteria, or null if the program fails to connect to the database.
      */
     public List<Course> getCourses(List<List<CoreCode>> cores) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QCourse course = QCourse.course;
         BooleanExpression orExpression = null;
         for(List<CoreCode> coreList : cores) {
@@ -42,8 +39,9 @@ public class CourseSearchRepository {
                 orExpression = orExpression.or(andExpression);
             }
         }
-        return queryFactory.selectFrom(course)
-                .where(orExpression)
-                .fetch();
+        if(orExpression == null) {
+            return null; // No search criteria provided
+        }
+        return courseRepository.findAll(orExpression);
     }
 }

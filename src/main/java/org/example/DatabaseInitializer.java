@@ -28,7 +28,7 @@ public class DatabaseInitializer {
      * @return a CommandLineRunner that initializes the database.
      */
     @Bean
-    public CommandLineRunner initDatabase(CourseSearchRepository repository) { return (filePaths) -> {
+    public CommandLineRunner initDatabase(CourseService repository) { return (filePaths) -> {
         for(String path : filePaths) {
             loadCourses(path);
         }

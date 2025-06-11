@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * AuthController handles user authentication and registration requests.
+ * It provides endpoints for user registration and login.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
