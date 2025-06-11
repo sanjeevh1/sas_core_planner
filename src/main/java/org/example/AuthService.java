@@ -53,7 +53,7 @@ public class AuthService {
      * @param authenticationRequest the authentication request containing username and password
      * @return the generated JWT token
      */
-    public String getToken(AuthenticationRequest authenticationRequest) throws Exception {
+    public String getToken(AuthenticationRequest authenticationRequest) {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);

@@ -30,10 +30,9 @@ public class AuthController {
      * Logs in a user and returns a JWT token if authentication is successful.
      * @param authenticationRequest the request containing user credentials for login
      * @return a ResponseEntity containing the JWT token
-     * @throws Exception if authentication fails
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthenticationRequest authenticationRequest) {
         String token = authService.getToken(authenticationRequest);
         AuthResponse response = new AuthResponse(token);
         return ResponseEntity.ok(response);
