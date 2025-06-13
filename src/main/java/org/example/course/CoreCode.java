@@ -1,4 +1,4 @@
-package org.example;
+package org.example.course;
 
 /**
  * Enum representing various core codes.

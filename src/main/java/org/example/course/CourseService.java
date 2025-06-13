@@ -1,4 +1,4 @@
-package org.example;
+package org.example.course;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;

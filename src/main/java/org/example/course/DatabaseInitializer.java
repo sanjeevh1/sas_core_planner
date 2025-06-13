@@ -1,4 +1,4 @@
-package org.example;
+package org.example.course;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.authentication;
 
 import lombok.Getter;
 import lombok.Setter;

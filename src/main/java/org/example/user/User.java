@@ -1,7 +1,8 @@
-package org.example;
+package org.example.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.course.Course;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.course;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.ListQuerydslPredicateExecutor;

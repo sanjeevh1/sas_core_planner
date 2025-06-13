@@ -1,4 +1,4 @@
-package org.example;
+package org.example.course;
 
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
