@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS course (
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    course_number CHAR(10) NOT NULL,
+    course_number CHAR(10) UNIQUE NOT NULL,
     course_title VARCHAR(255),
     credits FLOAT,
     subject VARCHAR(255)

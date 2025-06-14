@@ -55,7 +55,12 @@ public class DatabaseInitializer implements CommandLineRunner {
                     .withIgnoreLeadingWhiteSpace(true)
                     .build()
                     .parse();
-            courseRepository.saveAll(courses);
+            for (Course course : courses) {
+                String courseNumber = course.getCourseNumber();
+                if (!courseRepository.existsByCourseNumber(courseNumber)) {
+                    courseRepository.save(course);
+                }
+            }
         } catch (FileNotFoundException e) {
             logger.error("File not found: {}", filePath, e);
         } catch (IOException e) {

@@ -42,16 +42,4 @@ public class Course {
     @CsvBindByName(column = "Subject")
     private String subject;
 
-    /**
-     * Checks if two Course objects are equal.
-     * @param o the object to compare with this Course.
-     * @return true o is a Course and all fields are equal, false otherwise.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Course course)) return false;
-
-        return id.equals(course.id);
-    }
 }
