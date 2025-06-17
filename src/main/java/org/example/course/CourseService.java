@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A service class that provides methods to search for courses based on core codes.
@@ -58,5 +59,15 @@ public class CourseService {
             andExpression = andExpression.and(expression);
         }
         return andExpression;
+    }
+
+    /**
+     * Retrieves a course by its ID.
+     * @param courseId the ID of the course to retrieve
+     * @return an Optional containing the Course if found, otherwise empty
+     */
+    @Transactional
+    public Optional<Course> getCourse(Long courseId) {
+        return courseRepository.findById(courseId);
     }
 }

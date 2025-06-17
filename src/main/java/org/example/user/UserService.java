@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service class for managing user operations related to courses.
@@ -23,16 +22,6 @@ public class UserService {
 
     @Autowired
     private CourseRepository courseRepository;
-
-    /**
-     * Retrieves a course by its ID.
-     * @param courseId the ID of the course to retrieve
-     * @return an Optional containing the Course if found, otherwise empty
-     */
-    @Transactional
-    public Optional<Course> getCourse(Long courseId) {
-        return courseRepository.findById(courseId);
-    }
 
     /**
      * Adds a course to a user's list of courses.

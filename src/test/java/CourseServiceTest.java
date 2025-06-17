@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
  * A test class for CourseService that verifies the functionality of the getCourses method.
  * It uses Mockito to mock dependencies and verify interactions.
  */
-@SpringBootTest(classes = org.example.CourseApplication.class)
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTest {
 
@@ -50,9 +48,12 @@ public class CourseServiceTest {
                 Expressions.TRUE.and(
                         qCourse.coreCodes.contains(CoreCode.CCO)
                         .and(qCourse.coreCodes.contains(CoreCode.HST)))
+                ).or(Expressions.TRUE.and(
+                        qCourse.coreCodes.contains(CoreCode.CCO)
+                        .and(qCourse.coreCodes.contains(CoreCode.CCD)))
                 );
         ArgumentCaptor<BooleanExpression> expressionCaptor = ArgumentCaptor.forClass(BooleanExpression.class);
-        List<List<CoreCode>> cores = List.of(List.of(CoreCode.CCO, CoreCode.HST));
+        List<List<CoreCode>> cores = List.of(List.of(CoreCode.CCO, CoreCode.HST),List.of(CoreCode.CCO, CoreCode.CCD));
         Mockito.when(courseRepository.findAll(Mockito.any(BooleanExpression.class))).thenReturn(List.of(mockCourse));
         List<Course> courses = courseService.getCourses(cores);
         Mockito.verify(courseRepository).findAll(expressionCaptor.capture());

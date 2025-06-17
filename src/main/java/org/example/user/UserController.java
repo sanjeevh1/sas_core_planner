@@ -1,6 +1,7 @@
 package org.example.user;
 
 import org.example.course.Course;
+import org.example.course.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CourseService courseService;
+
     /**
      * Adds a course to a user's list of getCourses.
      * @param courseId the id of the course to add
@@ -28,7 +32,7 @@ public class UserController {
     @PostMapping("/add/{id}")
     public ResponseEntity<?> addCourseById(@PathVariable("id") Long courseId) {
         User user = userService.getCurrentUser();
-        Optional<Course> courseOptional = userService.getCourse(courseId);
+        Optional<Course> courseOptional = courseService.getCourse(courseId);
         if(courseOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
