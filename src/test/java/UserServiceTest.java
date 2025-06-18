@@ -50,4 +50,26 @@ public class UserServiceTest {
         Assertions.assertEquals(expectedCourses, actualCourses);
     }
 
+    /**
+     * Test for the removeCourseFromUser method in UserService.
+     */
+    @Test
+    public void testRemoveCourseFromUser() {
+        String expectedUsername = "testUser";
+        String expectedPassword = "password";
+        User user = new User(1L, expectedUsername, expectedPassword, new ArrayList<>());
+        Course course = new Course(2L, "00:000:000", "Mock Course Title", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject");
+        user.addCourse(course);
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        userService.removeCourseFromUser(user, course.getId());
+        Mockito.verify(userRepository).save(userCaptor.capture());
+        User capturedUser = userCaptor.getValue();
+        String actualUsername = capturedUser.getUsername();
+        String actualPassword = capturedUser.getPassword();
+        Assertions.assertEquals(expectedUsername, actualUsername);
+        Assertions.assertEquals(expectedPassword, actualPassword);
+        List<Course> courses = capturedUser.getCourses();
+        Assertions.assertTrue(courses.isEmpty());
+    }
+
 }

@@ -9,8 +9,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * Service class for managing user operations related to courses.
  */
@@ -43,16 +41,6 @@ public class UserService {
     public void removeCourseFromUser(User user, Long courseId) {
         user.removeCourseById(courseId);
         userRepository.save(user);
-    }
-
-    /**
-     * Retrieves all courses the user is taking.
-     * @param user the User object whose courses are to be retrieved
-     * @return a List of Courses the user is enrolled in
-     */
-    @Transactional
-    public List<Course> getUserCourses(User user) {
-        return user.getCourses();
     }
 
     /**

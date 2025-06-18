@@ -66,7 +66,7 @@ public class UserController {
     @GetMapping("/courses")
     public ResponseEntity<List<Course>> getCourses() {
         User user = userService.getCurrentUser();
-        List<Course> courses = userService.getUserCourses(user);
+        List<Course> courses = user.getCourses();
         return ResponseEntity.ok(courses);
     }
 }
