@@ -11,6 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,12 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @Mock
+    private Authentication authentication;
 
     /**
      * Test for the addCourseToUser method in UserService.
@@ -70,6 +80,25 @@ public class UserServiceTest {
         Assertions.assertEquals(expectedPassword, actualPassword);
         List<Course> courses = capturedUser.getCourses();
         Assertions.assertTrue(courses.isEmpty());
+    }
+
+    /**
+     * Test for the getCurrentUser method in UserService.
+     * This test verifies that the method retrieves the currently authenticated user.
+     */
+    @Test
+    public void testGetCurrentUser() {
+        String expectedUsername = "testUser";
+        String expectedPassword = "password";
+        User user = new User(1L, expectedUsername, expectedPassword, new ArrayList<>());
+        Mockito.when(authentication.getName()).thenReturn(expectedUsername);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(userRepository.findByUsername(expectedUsername)).thenReturn(java.util.Optional.of(user));
+        User currentUser = userService.getCurrentUser();
+        Assertions.assertNotNull(currentUser);
+        Assertions.assertEquals(expectedUsername, currentUser.getUsername());
+        Assertions.assertEquals(expectedPassword, currentUser.getPassword());
     }
 
 }
