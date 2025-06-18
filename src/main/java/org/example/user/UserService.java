@@ -2,7 +2,6 @@ package org.example.user;
 
 import jakarta.transaction.Transactional;
 import org.example.course.Course;
-import org.example.course.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,9 +16,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     /**
      * Adds a course to a user's list of courses.
