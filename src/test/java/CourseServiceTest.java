@@ -36,13 +36,7 @@ public class CourseServiceTest {
         // This is a placeholder for the actual test implementation.
         // You would typically use Mockito to mock the behavior of courseRepository
         // and verify that courseService.getCourses() behaves as expected.
-        Course mockCourse = new Course();
-        mockCourse.setId(1L);
-        mockCourse.setCourseNumber("00:000:000");
-        mockCourse.setCourseTitle("Mock Course Title");
-        mockCourse.setCredits(3);
-        mockCourse.setSubject("Mock Subject");
-        mockCourse.setCoreCodes(List.of(CoreCode.CCO, CoreCode.HST));
+        Course mockCourse = new Course(1L, "00:000:000", "Mock Course Title", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject");
         QCourse qCourse = QCourse.course;
         BooleanExpression expectedExpression = Expressions.FALSE.or(
                 Expressions.TRUE.and(

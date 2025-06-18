@@ -36,13 +36,7 @@ public class UserServiceTest {
         String expectedUsername = "testUser";
         String expectedPassword = "password";
         User user = new User(1L, expectedUsername, expectedPassword, new ArrayList<>());
-        Course course = new Course();
-        course.setId(2L);
-        course.setCourseNumber("00:000:000");
-        course.setCourseTitle("Mock Course Title");
-        course.setCredits(3);
-        course.setSubject("Mock Subject");
-        course.setCoreCodes(List.of(CoreCode.CCO, CoreCode.HST));
+        Course course = new Course(2L, "00:000:000", "Mock Course Title", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject");
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         userService.addCourseToUser(user, course);
         Mockito.verify(userRepository).save(userCaptor.capture());
