@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,7 @@ public class AuthService {
     private AuthenticationConfiguration authenticationConfiguration;
 
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -36,18 +36,18 @@ public class AuthService {
 
     /**
      * Registers up a new user with the provided username and password.
-     *
      * @param authenticationRequest the authentication request containing username and password
+     * @return the registered User object.
      */
     @Transactional
-    public void register(AuthenticationRequest authenticationRequest) {
+    public User register(AuthenticationRequest authenticationRequest) {
         User user = new User();
         String username = authenticationRequest.getUsername();
         user.setUsername(username);
         String password = authenticationRequest.getPassword();
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
-        userRepository.save(user);
+        return user;
     }
 
     /**
@@ -61,22 +61,12 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
         try {
             authenticationManager.authenticate(authToken);
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             return null;
         }
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         JwtUtil jwtUtil = new JwtUtil();
         return jwtUtil.generateToken(userDetails);
-    }
-
-    /**
-     * Checks if a user with the given username already exists.
-     * @param username the username to check
-     * @return true if the user exists, false otherwise
-     */
-    @Transactional
-    public boolean exists(String username) {
-        return userRepository.existsByUsername(username);
     }
 
 }

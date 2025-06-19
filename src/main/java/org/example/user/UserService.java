@@ -52,4 +52,22 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    /**
+     * Checks if a user with the given username already exists.
+     * @param username the username to check
+     * @return true if the user exists, false otherwise
+     */
+    @Transactional
+    public boolean exists(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    /**
+     * Registers a new user with the provided username and password.
+     * @param user the User object containing username and password
+     */
+    public void addUser(User user) {
+        userRepository.save(user);
+    }
 }

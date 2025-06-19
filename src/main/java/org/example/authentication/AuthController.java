@@ -1,5 +1,7 @@
 package org.example.authentication;
 
+import org.example.user.User;
+import org.example.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * Registers a new user with the provided authentication request.
      * @param authenticationRequest the request containing user details for registration
@@ -24,10 +29,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
         String username = authenticationRequest.getUsername();
-        if (authService.exists(username)) {
+        if (userService.exists(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
         }
-        authService.register(authenticationRequest);
+        User user = authService.register(authenticationRequest);
+        userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
