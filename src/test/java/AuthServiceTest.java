@@ -37,9 +37,6 @@ public class AuthServiceTest {
      */
     @Test
     public void testRegister() {
-        // This is a placeholder for the actual test implementation.
-        // You would typically use Mockito to mock the behavior of dependencies
-        // and verify that authService.register() behaves as expected.
         String username = "testUser";
         String password = "password";
         String encodedPassword = "encodedPassword";
@@ -57,16 +54,13 @@ public class AuthServiceTest {
      */
     @Test
     public void testGetTokenValidAuthentication() throws Exception {
-        // This is a placeholder for the actual test implementation.
-        // You would typically use Mockito to mock the behavior of authenticationManager
-        // and verify that authService.getToken() behaves as expected.
         String username = "testUser";
         String password = "password";
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password);
         Mockito.when(authenticationConfiguration.getAuthenticationManager())
                 .thenReturn(authentication -> {
                     if (authentication.getName().equals(username) && authentication.getCredentials().equals(password)) {
-                        return authentication; // Simulate successful authentication
+                        return authentication;
                     } else {
                         throw new AuthenticationException("Authentication failed") {};
                     }
@@ -75,7 +69,7 @@ public class AuthServiceTest {
         Mockito.when(customUserDetailsService.loadUserByUsername(username))
                 .thenReturn(new org.springframework.security.core.userdetails.User(username, password, new ArrayList<>()));
         String token = authService.getToken(authenticationRequest);
-        Assertions.assertNotNull(token); // Assuming token generation is mocked to return a non-null value
+        Assertions.assertNotNull(token);
     }
 
     /**
@@ -85,18 +79,19 @@ public class AuthServiceTest {
      */
     @Test
     public void testGetTokenInvalidAuthentication() throws Exception {
-        // This is a placeholder for the actual test implementation.
-        // You would typically use Mockito to mock the behavior of authenticationManager
-        // and verify that authService.getToken() behaves as expected.
         String username = "testUser";
-        String password = "wrongPassword";
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password);
+        String wrongPassword = "wrongPassword";
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, wrongPassword);
         Mockito.when(authenticationConfiguration.getAuthenticationManager())
                 .thenReturn(authentication -> {
-                    throw new AuthenticationException("Authentication failed") {};
+                    if (authentication.getName().equals(username) && authentication.getCredentials().equals(wrongPassword)) {
+                        throw new AuthenticationException("Authentication failed") {};
+                    } else {
+                        return authentication;
+                    }
                 });
         authService.init();
         String token = authService.getToken(authenticationRequest);
-        Assertions.assertNull(token); // Expecting null token for invalid credentials
+        Assertions.assertNull(token);
     }
 }
