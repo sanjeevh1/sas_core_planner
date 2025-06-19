@@ -3,7 +3,6 @@ package org.example.authentication;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.example.user.User;
-import org.example.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
