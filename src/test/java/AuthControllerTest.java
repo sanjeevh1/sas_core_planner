@@ -1,4 +1,5 @@
 import org.example.authentication.AuthController;
+import org.example.authentication.AuthResponse;
 import org.example.authentication.AuthService;
 import org.example.authentication.AuthenticationRequest;
 import org.example.user.User;
@@ -52,11 +53,35 @@ public class AuthControllerTest {
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
+    /**
+     * Test for the registerUser method with a username that already exists.
+     */
     @Test
-    public void testRegisterUserAlreadyExists(){}
+    public void testRegisterUserAlreadyExists(){
+        String username = "existingUser";
+        String password = "password";
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(username, password);
+        Mockito.when(userService.exists(username)).thenReturn(true);
+        ResponseEntity<?> response = authController.registerUser(authenticationRequest);
+        Mockito.verify(userService, Mockito.never()).addUser(Mockito.any(User.class));
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Username already exists", response.getBody());
+    }
 
+    /**
+     * Test for the loginUser method in AuthController.
+     * This test verifies that a user can log in with valid credentials.
+     */
     @Test
-    public void testLoginUserValidCredentials(){}
+    public void testLoginUserValidCredentials(){
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest("testUser", "password");
+        String token = "validToken";
+        Mockito.when(authService.getToken(authenticationRequest)).thenReturn(token);
+        ResponseEntity<?> response = authController.loginUser(authenticationRequest);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        AuthResponse authResponse = (AuthResponse) response.getBody();
+        Assertions.assertEquals(token, authResponse.getToken());
+    }
 
     @Test
     public void testLoginUserInvalidCredentials(){}
