@@ -83,6 +83,14 @@ public class AuthControllerTest {
         Assertions.assertEquals(token, authResponse.getToken());
     }
 
+    /**
+     * Test for the loginUser method with invalid credentials.
+     */
     @Test
-    public void testLoginUserInvalidCredentials(){}
+    public void testLoginUserInvalidCredentials(){
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest("testUser", "wrongPassword");
+        Mockito.when(authService.getToken(authenticationRequest)).thenReturn(null);
+        ResponseEntity<?> response = authController.loginUser(authenticationRequest);
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
 }
