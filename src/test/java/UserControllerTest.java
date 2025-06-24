@@ -52,10 +52,19 @@ public class UserControllerTest {
         Course capturedCourse = courseCaptor.getValue();
         Assertions.assertEquals(user, capturedUser);
         Assertions.assertEquals(course, capturedCourse);
+        Assertions.assertEquals(ResponseEntity.noContent().build(), response);
     }
 
     @Test
-    public void testAddCourseByIdNotFound() {}
+    public void testAddCourseByIdNotFound() {
+        Long courseId = 1L;
+        User user = new User(1L, "testUser", "password", new ArrayList<>());
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
+        Mockito.when(courseService.getCourse(courseId)).thenReturn(Optional.empty());
+        ResponseEntity<?> response = userController.addCourseById(courseId);
+        Mockito.verify(userService, Mockito.never()).addCourseToUser(Mockito.any(), Mockito.any());
+        Assertions.assertEquals(ResponseEntity.notFound().build(), response);
+    }
 
     @Test
     public void testAddCourseByIdAlreadyRegistered() {}
