@@ -89,5 +89,26 @@ public class UserControllerTest {
         Assertions.assertEquals("User is already registered for this course", response.getBody());
     }
 
+    /**
+     * Test for removing a course by ID from a user's list of courses.
+     */
+    @Test
+    public void testRemoveCourseByIdRegistered() {
+        Long courseId = 1L;
+        User user = new User(1L, "testUser", "password", new ArrayList<>());
+        Course course = new Course(courseId, "00:000:000", "Mock Course Title", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject");
+        user.addCourse(course);
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<Long> courseIdCaptor = ArgumentCaptor.forClass(Long.class);
+        ResponseEntity<?> response = userController.removeCourseById(courseId);
+        Mockito.verify(userService).removeCourseFromUser(userCaptor.capture(), courseIdCaptor.capture());
+        User capturedUser = userCaptor.getValue();
+        Long capturedCourseId = courseIdCaptor.getValue();
+        Assertions.assertEquals(user, capturedUser);
+        Assertions.assertEquals(courseId, capturedCourseId);
+        Assertions.assertEquals(ResponseEntity.noContent().build(), response);
+    }
+
 
 }
