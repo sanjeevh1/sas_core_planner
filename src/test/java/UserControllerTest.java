@@ -123,4 +123,19 @@ public class UserControllerTest {
         Mockito.verify(userService, Mockito.never()).removeCourseFromUser(Mockito.any(), Mockito.anyLong());
         Assertions.assertEquals(ResponseEntity.notFound().build(), response);
     }
+
+    /**
+     * Test for retrieving a user's list of courses.
+     * This test verifies that the correct list of courses is returned for the user.
+     */
+    @Test
+    public void testGetCourses() {
+        Course course1 = new Course(1L, "00:000:000", "Mock Course Title 1", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject 1");
+        Course course2 = new Course(2L, "00:000:001", "Mock Course Title 2", 4, List.of(CoreCode.CCO), "Mock Subject 2");
+        User user = new User(1L, "testUser", "password", List.of(course1, course2));
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
+        ResponseEntity<List<Course>> response = userController.getCourses();
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(user.getCourses(), response.getBody());
+    }
 }
