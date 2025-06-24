@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -55,6 +56,10 @@ public class UserControllerTest {
         Assertions.assertEquals(ResponseEntity.noContent().build(), response);
     }
 
+    /**
+     * Test for adding a course by ID when the course does not exist.
+     * This test verifies that a 404 Not Found response is returned when the course is not found.
+     */
     @Test
     public void testAddCourseByIdNotFound() {
         Long courseId = 1L;
@@ -66,8 +71,23 @@ public class UserControllerTest {
         Assertions.assertEquals(ResponseEntity.notFound().build(), response);
     }
 
+    /**
+     * Test for adding a course by ID when the user is already registered for that course.
+     * This test verifies that a 409 Conflict response is returned when the user is already registered.
+     */
     @Test
-    public void testAddCourseByIdAlreadyRegistered() {}
+    public void testAddCourseByIdAlreadyRegistered() {
+        Long courseId = 1L;
+        User user = new User(1L, "testUser", "password", new ArrayList<>());
+        Course course = new Course(courseId, "00:000:000", "Mock Course Title", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject");
+        user.addCourse(course);
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
+        Mockito.when(courseService.getCourse(courseId)).thenReturn(Optional.of(course));
+        ResponseEntity<?> response = userController.addCourseById(courseId);
+        Mockito.verify(userService, Mockito.never()).addCourseToUser(Mockito.any(), Mockito.any());
+        Assertions.assertEquals(HttpStatus.CONFLICT ,response.getStatusCode());
+        Assertions.assertEquals("User is already registered for this course", response.getBody());
+    }
 
 
 }
