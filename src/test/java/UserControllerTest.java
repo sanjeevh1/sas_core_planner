@@ -110,5 +110,17 @@ public class UserControllerTest {
         Assertions.assertEquals(ResponseEntity.noContent().build(), response);
     }
 
-
+    /**
+     * Test for removing a course by ID when the user is not registered for that course.
+     * This test verifies that a 404 Not Found response is returned when the user is not registered.
+     */
+    @Test
+    public void testRemoveCourseByIdNotRegistered() {
+        Long courseId = 1L;
+        User user = new User(1L, "testUser", "password", new ArrayList<>());
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
+        ResponseEntity<?> response = userController.removeCourseById(courseId);
+        Mockito.verify(userService, Mockito.never()).removeCourseFromUser(Mockito.any(), Mockito.anyLong());
+        Assertions.assertEquals(ResponseEntity.notFound().build(), response);
+    }
 }
