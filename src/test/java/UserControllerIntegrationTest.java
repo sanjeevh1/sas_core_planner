@@ -1,11 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.authentication.AuthResponse;
-import org.example.course.CoreCode;
 import org.example.course.Course;
-import org.example.course.CourseRepository;
 import org.example.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,10 @@ import java.util.List;
 /**
  * Integration tests for UserController.
  */
-@SpringBootTest(classes = org.example.CourseApplication.class)
+@SpringBootTest(
+        classes = org.example.CourseApplication.class,
+        args = {"src/test/resources/courses.csv"}
+)
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 public class UserControllerIntegrationTest {
@@ -33,16 +33,16 @@ public class UserControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private CourseRepository courseRepository;
-
     private String header;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Registers a user before each test.
+     * @throws Exception if an error occurs during the registration process
+     */
     @BeforeEach
     public void registerUser() throws Exception {
-        // Register a user before running tests
         userRepository.deleteAll();
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
                         .contentType("application/json")
@@ -61,22 +61,11 @@ public class UserControllerIntegrationTest {
     }
 
     /**
-     * Clears the course database before each test to ensure a clean state.
-     * This is necessary to avoid conflicts with existing courses during tests.
-     */
-    @BeforeEach
-    public void clearDatabase() {
-        courseRepository.deleteAll();
-    }
-
-    /**
      * Tests the addition of a course to a user's list of courses.
      * @throws Exception if an error occurs during the test execution
      */
     @Test
     public void testAddCourseValid() throws Exception {
-        Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
-        courseRepository.save(course);
         MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
@@ -100,8 +89,6 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void testAddCourseRegistered() throws Exception {
-        Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
-        courseRepository.save(course);
         MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
@@ -146,8 +133,6 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void testRemoveCourseRegistered() throws Exception {
-        Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
-        courseRepository.save(course);
         MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
