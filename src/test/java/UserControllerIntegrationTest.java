@@ -127,8 +127,36 @@ public class UserControllerIntegrationTest {
         Assertions.assertEquals(1, userCourses.size());
     }
 
+    /**
+     * Tests the addition of a course that does not exist.
+     * @throws Exception if an error occurs during the test execution
+     */
     @Test
-    public void testAddCourseNotFound() {}
+    public void testAddCourseNotFound() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
+                        .contentType("application/json")
+                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .contentType("application/json")
+                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
+        String token = authResponse.getToken();
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/add/9999")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        MvcResult userCoursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String userCoursesJson = userCoursesResult.getResponse().getContentAsString();
+        List<Course> userCourses = objectMapper.readValue(userCoursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
+        Assertions.assertTrue(userCourses.isEmpty(), "User should not have any courses after trying to add a non-existent course");
+    }
 
     @Test
     public void testRemoveCourseRegistered() {
