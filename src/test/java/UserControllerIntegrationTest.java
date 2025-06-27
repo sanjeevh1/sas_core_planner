@@ -4,6 +4,7 @@ import org.example.course.CoreCode;
 import org.example.course.Course;
 import org.example.course.CourseRepository;
 import org.example.user.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,14 +83,57 @@ public class UserControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].courseNumber").value("00:000:001"));
     }
 
+    /**
+     * Tests the addition of a course that the user is already registered for.
+     * @throws Exception if an error occurs during the test execution
+     */
     @Test
-    public void testAddCourseRegistered() {}
+    public void testAddCourseRegistered() throws Exception {
+        Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
+        courseRepository.save(course);
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
+                        .contentType("application/json")
+                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .contentType("application/json")
+                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String json = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
+        String token = authResponse.getToken();
+        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
+                        .contentType("application/json")
+                        .content("[[\"CCO\", \"CCD\"]]"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String coursesJson = coursesResult.getResponse().getContentAsString();
+        List<Course> courses = objectMapper.readValue(coursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
+        Long courseId = courses.get(0).getId();
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isConflict());
+        MvcResult userCoursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        String userCoursesJson = userCoursesResult.getResponse().getContentAsString();
+        List<Course> userCourses = objectMapper.readValue(userCoursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
+        Assertions.assertEquals(1, userCourses.size());
+    }
 
     @Test
     public void testAddCourseNotFound() {}
 
     @Test
-    public void testRemoveCourseRegistered() {}
+    public void testRemoveCourseRegistered() {
+
+    }
 
     @Test
     public void testRemoveCourseNotRegistered() {}
