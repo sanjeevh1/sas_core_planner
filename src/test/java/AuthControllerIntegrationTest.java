@@ -28,6 +28,10 @@ public class AuthControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Clears the user database before each test to ensure a clean state.
+     * This is necessary to avoid conflicts with existing users during tests.
+     */
     @BeforeEach
     public void clearDatabase() {
         userRepository.deleteAll();
@@ -71,5 +75,37 @@ public class AuthControllerIntegrationTest {
                         .contentType("application/json")
                         .content("{\"username\":\"existingUser\", \"password\":\"testPassword\"}"))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
+    }
+
+    /**
+     * Tests the login functionality with an invalid username.
+     * This test verifies that attempting to log in with a non-existent username
+     * results in an unauthorized status.
+     * @throws Exception if an error occurs during the test execution
+     */
+    @Test
+    public void testLoginInvalidUsername() throws Exception {
+        // Test login with an invalid username
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .contentType("application/json")
+                        .content("{\"username\":\"invalidUser\", \"password\":\"testPassword\"}"))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+    }
+
+    /**
+     * Tests the login functionality with an invalid password.
+     * @throws Exception if an error occurs during the test execution
+     */
+    @Test
+    public void testLoginInvalidPassword() throws Exception {
+        // Test login with an invalid password
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
+                            .contentType("application/json")
+                            .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
+                    .andExpect(MockMvcResultMatchers.status().isCreated());
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
+                        .contentType("application/json")
+                        .content("{\"username\":\"testUser\", \"password\":\"wrongPassword\"}"))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 }
