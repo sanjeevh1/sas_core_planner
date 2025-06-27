@@ -1,3 +1,5 @@
+package unit.authentication;
+
 import org.example.authentication.AuthService;
 import org.example.authentication.AuthenticationRequest;
 import org.example.authentication.CustomUserDetailsService;

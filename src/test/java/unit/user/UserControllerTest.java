@@ -1,3 +1,5 @@
+package unit.user;
+
 import org.example.course.CoreCode;
 import org.example.course.CourseService;
 import org.example.course.Course;

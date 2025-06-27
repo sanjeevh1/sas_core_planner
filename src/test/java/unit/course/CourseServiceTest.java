@@ -1,3 +1,5 @@
+package unit.course;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import org.example.course.*;
@@ -33,9 +35,6 @@ public class CourseServiceTest {
      */
     @Test
     public void testGetCourses() {
-        // This is a placeholder for the actual test implementation.
-        // You would typically use Mockito to mock the behavior of courseRepository
-        // and verify that courseService.getCourses() behaves as expected.
         Course mockCourse = new Course(1L, "00:000:000", "Mock Course Title", 3, List.of(CoreCode.CCO, CoreCode.HST), "Mock Subject");
         QCourse qCourse = QCourse.course;
         BooleanExpression expectedExpression = Expressions.FALSE.or(
@@ -55,6 +54,5 @@ public class CourseServiceTest {
         Assertions.assertEquals(expectedExpression.toString(), actualExpression.toString());
         List<Course> expectedCourses = List.of(mockCourse);
         Assertions.assertEquals(courses, expectedCourses);
-
     }
 }

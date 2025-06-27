@@ -1,4 +1,5 @@
-import jakarta.persistence.criteria.CriteriaBuilder;
+package unit.authentication;
+
 import org.example.authentication.CustomUserDetailsService;
 import org.example.user.User;
 import org.example.user.UserRepository;

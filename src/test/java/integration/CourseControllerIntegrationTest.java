@@ -1,3 +1,5 @@
+package integration;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.course.Course;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +27,6 @@ public class CourseControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
 
     /**
      * Tests the retrieval of courses based on core codes.

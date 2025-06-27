@@ -1,3 +1,5 @@
+package unit.authentication;
+
 import org.example.authentication.AuthController;
 import org.example.authentication.AuthResponse;
 import org.example.authentication.AuthService;

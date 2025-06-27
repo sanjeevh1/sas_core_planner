@@ -1,3 +1,5 @@
+package integration;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.authentication.AuthResponse;
 import org.example.course.Course;

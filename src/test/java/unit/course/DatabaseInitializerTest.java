@@ -1,3 +1,5 @@
+package unit.course;
+
 import org.example.course.CoreCode;
 import org.example.course.Course;
 import org.example.course.CourseRepository;
