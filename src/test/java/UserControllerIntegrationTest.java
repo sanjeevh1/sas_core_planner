@@ -36,11 +36,14 @@ public class UserControllerIntegrationTest {
     @Autowired
     private CourseRepository courseRepository;
 
-    private String token;
+    private String header;
 
-    @BeforeAll
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @BeforeEach
     public void registerUser() throws Exception {
         // Register a user before running tests
+        userRepository.deleteAll();
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
                         .contentType("application/json")
                         .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
@@ -53,16 +56,16 @@ public class UserControllerIntegrationTest {
         String json = result.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
-        token = authResponse.getToken();
+        String token = authResponse.getToken();
+        header = "Bearer " + token;
     }
 
     /**
-     * Clears the user and course databases before each test to ensure a clean state.
-     * This is necessary to avoid conflicts with existing users and courses during tests.
+     * Clears the course database before each test to ensure a clean state.
+     * This is necessary to avoid conflicts with existing courses during tests.
      */
     @BeforeEach
     public void clearDatabase() {
-        userRepository.deleteAll();
         courseRepository.deleteAll();
     }
 
@@ -74,19 +77,6 @@ public class UserControllerIntegrationTest {
     public void testAddCourseValid() throws Exception {
         Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
         courseRepository.save(course);
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                        .andExpect(MockMvcResultMatchers.status().isCreated());
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andReturn();
-        String json = result.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
-        String token = authResponse.getToken();
         MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
@@ -96,10 +86,10 @@ public class UserControllerIntegrationTest {
         List<Course> courses = objectMapper.readValue(coursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
         Long courseId = courses.get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
         mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].courseNumber").value("00:000:001"));
     }
@@ -112,19 +102,6 @@ public class UserControllerIntegrationTest {
     public void testAddCourseRegistered() throws Exception {
         Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
         courseRepository.save(course);
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String json = result.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
-        String token = authResponse.getToken();
         MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
@@ -134,13 +111,13 @@ public class UserControllerIntegrationTest {
         List<Course> courses = objectMapper.readValue(coursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
         Long courseId = courses.get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
         mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
         MvcResult userCoursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String userCoursesJson = userCoursesResult.getResponse().getContentAsString();
@@ -154,45 +131,23 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void testAddCourseNotFound() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String json = result.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
-        String token = authResponse.getToken();
         mockMvc.perform(MockMvcRequestBuilders.post("/user/add/9999")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
         mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
+    /**
+     * Tests the retrieval of a user's list of courses.
+     * @throws Exception if an error occurs during the test execution
+     */
     @Test
     public void testRemoveCourseRegistered() throws Exception {
         Course course = new Course(null, "00:000:001", "Course One", 3, List.of(CoreCode.CCO, CoreCode.CCD), "Subject One");
         courseRepository.save(course);
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
-                        .contentType("application/json")
-                        .content("{\"username\":\"testUser\", \"password\":\"testPassword\"}"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-        String json = result.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        AuthResponse authResponse = objectMapper.readValue(json, AuthResponse.class);
-        String token = authResponse.getToken();
         MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
@@ -202,18 +157,30 @@ public class UserControllerIntegrationTest {
         List<Course> courses = objectMapper.readValue(coursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
         Long courseId = courses.get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
         mockMvc.perform(MockMvcRequestBuilders.delete("/user/remove/" + courseId)
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
         mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
+    /**
+     * Tests the removal of a course that the user is not registered for.
+     * @throws Exception if an error occurs during the test execution
+     */
     @Test
-    public void testRemoveCourseNotRegistered() {}
+    public void testRemoveCourseNotRegistered() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/remove/9999")
+                        .header("Authorization", header))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
+                        .header("Authorization", header))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
+    }
 
 }
