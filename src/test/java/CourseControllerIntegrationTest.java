@@ -45,8 +45,6 @@ public class CourseControllerIntegrationTest {
      *
      * @throws Exception if an error occurs during the test execution
      */
-     * @throws Exception
-     */
     @Test
     public void testGetCourses() throws Exception {
         // Implement integration test for getting courses
