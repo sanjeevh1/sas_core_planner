@@ -1,7 +1,7 @@
-usernameField = document.getElementById('username');
-passwordField = document.getElementById('password');
-registerButton = document.getElementById('register');
-apiUrl = 'http://localhost:8080';
+const usernameField = document.getElementById('username');
+const passwordField = document.getElementById('password');
+const registerButton = document.getElementById('register');
+const apiUrl = 'http://localhost:8080';
 registerButton.addEventListener('click', function() {
     const username = usernameField.value;
     const password = passwordField.value;
@@ -14,13 +14,12 @@ registerButton.addEventListener('click', function() {
             },
             body: JSON.stringify({ username, password })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        .then(response => {
+            if (response.ok) {
                 alert('Registration successful! You can now log in.');
                 window.location.href = '/login';
             } else {
-                alert('Registration failed: ' + data.message);
+                alert('Registration failed');
             }
         })
         .catch(error => {
