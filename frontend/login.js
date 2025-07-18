@@ -17,7 +17,9 @@ loginButton.addEventListener('click', function() {
         })
         .then(response => {
             if (response.ok) {
-                alert('Login successful!');
+               localStorage.setItem('username', username);
+               localStorage.setItem('token', response.json().then(data => data.token));
+               window.location.href = 'search.html';
             } else {
                 errorField.textContent = 'Incorrect username or password.';
             }
