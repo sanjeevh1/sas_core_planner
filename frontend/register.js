@@ -26,5 +26,7 @@ registerButton.addEventListener('click', function() {
             console.error('Error:', error);
             errorField.textContent = 'An error occurred while trying to register.';
         });
+    } else {
+        errorField.textContent = 'Please enter a username and password.';
     }
 });

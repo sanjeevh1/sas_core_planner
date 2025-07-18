@@ -1,32 +1,31 @@
-apiUrl = 'localhost:8080';
-usernameField = document.getElementById('username');
-passwordField = document.getElementById('password');
-loginButton = document.getElementById('login-button');
+const apiUrl = 'http://localhost:8080';
+const usernameField = document.getElementById('username');
+const passwordField = document.getElementById('password');
+const loginButton = document.getElementById('login');
+const errorField = document.getElementById('error');
 loginButton.addEventListener('click', function() {
     const username = usernameField.value;
     const password = passwordField.value;
 
     if (username && password) {
-        fetch(`${apiUrl}/login`, {
+        fetch(`${apiUrl}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ username, password })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '/dashboard';
+        .then(response => {
+            if (response.ok) {
+                alert('Login successful!');
             } else {
-                alert('Login failed: ' + data.message);
+                errorField.textContent = 'Incorrect username or password.';
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while trying to log in.');
+            errorField.textContent = 'An error occurred while trying to log in.';
         });
     } else {
-        alert('Please enter both username and password.');
+        errorField.textContent = 'Please enter your username and password.';
     }
-}
+});
