@@ -1,6 +1,9 @@
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
+window.addEventListener('storage', function(event) {
+    location.reload();
+});
 const usernameField = document.getElementById('username');
 const logoutButton = document.getElementById('logout');
 const username = localStorage.getItem('username');
