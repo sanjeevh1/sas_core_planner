@@ -1,6 +1,7 @@
 const usernameField = document.getElementById('username');
 const passwordField = document.getElementById('password');
 const registerButton = document.getElementById('register');
+const errorField = document.getElementById('error');
 const apiUrl = 'http://localhost:8080';
 registerButton.addEventListener('click', function() {
     const username = usernameField.value;
@@ -16,17 +17,14 @@ registerButton.addEventListener('click', function() {
         })
         .then(response => {
             if (response.ok) {
-                alert('Registration successful! You can now log in.');
-                window.location.href = '/login';
+                window.location.href = 'login.html';
             } else {
-                alert('Registration failed');
+                errorField.textContent = 'Username already exists.';
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while trying to register.');
+            errorField.textContent = 'An error occurred while trying to register.';
         });
-    } else {
-        alert('Please enter both username and password.');
     }
 });

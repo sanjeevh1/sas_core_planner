@@ -7,15 +7,16 @@
 </head>
 <body>
     <h1>Sign Up</h1>
-    <form method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
         <br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
-        <button type="submit" id="register">Sign Up</button>
-    </form>
+        <div>
+            <button id="register">Sign Up</button>
+            <p id="error" style="color: red;"></p>
+        </div>
     <p>Already have an account? <a href="login.html">Login here</a>.</p>
     <script src="register.js"></script>
 </body>
