@@ -22,9 +22,13 @@ searchButton.addEventListener('click', function() {
     if (core) {
         fetch(`${apiUrl}/courses/course-list`, {
             method: 'POST',
-            body: JSON.stringify([ core ])
-            }).then(response => {
-                courseList.textContent = response.json();
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([ [core] ])
+            }).then(response => response.json())
+             .then(data => {
+                courseList.textContent = JSON.stringify(data);
 
             });
     }
