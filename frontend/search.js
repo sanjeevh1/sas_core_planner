@@ -39,9 +39,19 @@ searchButton.addEventListener('click', function() {
             },
             body: JSON.stringify([ [core] ])
             }).then(response => response.json())
-             .then(data => {
-                courseList.textContent = JSON.stringify(data);
-
+             .then(courses => {
+             courseList.innerHTML = ''; // Clear previous results
+             courses.forEach(course => {
+             courseList.innerHTML += `
+                         <div class="course-div" id="${course.number}-div">
+                             <p>${course.courseNumber}</p>
+                             <p>${course.courseTitle}</p>
+                             <p>${course.credits}</p>
+                             <p>${course.coreCodes.join(", ")}</p>
+                             <p>${course.subject}</p>
+                             <button class="add-btn">+</button>
+                         </div>
+                     `;});
             });
     }
 });
