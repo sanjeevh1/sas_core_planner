@@ -21,7 +21,7 @@ searchButton.addEventListener('click', function() {
     const core = coreField.value;
     if (core) {
         fetch(`${apiUrl}/courses/course-list`, {
-            method: 'GET',
+            method: 'POST',
             body: JSON.stringify([ core ])
             }).then(response => {
                 courseList.textContent = response.json();

@@ -68,7 +68,7 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void testAddCourseValid() throws Exception {
-        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
+        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.post("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -91,7 +91,7 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void testAddCourseRegistered() throws Exception {
-        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
+        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.post("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -135,7 +135,7 @@ public class UserControllerIntegrationTest {
      */
     @Test
     public void testRemoveCourseRegistered() throws Exception {
-        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
+        MvcResult coursesResult = mockMvc.perform(MockMvcRequestBuilders.post("/courses/course-list")
                         .contentType("application/json")
                         .content("[[\"CCO\", \"CCD\"]]"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
