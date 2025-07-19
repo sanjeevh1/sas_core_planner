@@ -37,7 +37,7 @@ public class CourseControllerIntegrationTest {
      */
     @Test
     public void testGetCourses() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/courses/course-list")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/courses/course-list")
                 .contentType("application/json")
                 .content("[[\"CCO\", \"CCD\"], [\"HST\", \"CCO\"]]"))
                 .andReturn();

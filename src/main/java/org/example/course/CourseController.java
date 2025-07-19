@@ -20,7 +20,7 @@ public class CourseController {
      * @param cores a list of lists of core codes to search for.
      * @return a list of courses that match the search criteria.
      */
-    @GetMapping("/course-list")
+    @PostMapping("/course-list")
     public ResponseEntity<List<Course>> getCourses(@RequestBody List<List<CoreCode>> cores) {
         List<Course> courses = courseService.getCourses(cores);
         return ResponseEntity.ok(courses);
