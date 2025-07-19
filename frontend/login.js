@@ -17,14 +17,18 @@ loginButton.addEventListener('click', function() {
         })
         .then(response => {
             if (response.ok) {
-               localStorage.setItem('username', username);
-               localStorage.setItem('token', response.json().then(data => data.token));
-               window.location.href = 'search.html';
+                return response.json();
             } else {
+                return null;
                 errorField.textContent = 'Incorrect username or password.';
             }
-        })
-        .catch(error => {
+        }).then(data => {
+            if (data) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', username);
+                window.location.href = 'search.html';
+            }
+        }).catch(error => {
             errorField.textContent = 'An error occurred while trying to log in.';
         });
     } else {

@@ -2,6 +2,18 @@ const apiUrl = 'http://localhost:8080';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
+fetch(`${apiUrl}/user/courses`, {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+}).then(response => {
+    if (response.ok) {
+        console.log('User is authenticated');
+    } else {
+        window.location.href = 'login.html';
+    }
+});
 window.addEventListener('storage', function(event) {
     location.reload();
 });
