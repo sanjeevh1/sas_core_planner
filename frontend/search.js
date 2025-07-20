@@ -2,12 +2,37 @@ const apiUrl = 'http://localhost:8080';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
-andButton = document.getElementById('and-button');
 coresDiv = document.getElementById('cores');
-andButton.addEventListener('click', function() {
-    const andPara = document.createElement('p');
-    andPara.textContent = 'AND';
-    coresDiv.appendChild(andPara);
+function addCoreGroup(firstTime = false) {
+    const coreGroup = document.createElement('div');
+    coreGroup.className = 'core-group';
+    const andButton = document.createElement('button');
+    andButton.textContent = 'AND';
+    const coreList = document.createElement('div');
+    coreList.className = 'core-list';
+
+    andButton.addEventListener('click', function() {
+        const andPara = document.createElement('p');
+        andPara.textContent = 'AND';
+        coreList.appendChild(andPara);
+        const coreSelect = document.createElement('select');
+        coreSelect.innerHTML = `
+            <option value="CCD">CCD</option>
+            <option value="CCO">CCO</option>
+            <option value="NS">NS</option>
+            <option value="SCL">SCL</option>
+            <option value="HST">HST</option>
+            <option value="AHo">AHo</option>
+            <option value="AHp">AHp</option>
+            <option value="AHq">AHq</option>
+            <option value="AHr">AHr</option>
+            <option value="WCr">WCr</option>
+            <option value="WCd">WCd</option>
+            <option value="WC">WC</option>
+            <option value="QQ">QQ</option>
+            <option value="QR">QR</option>`;
+        coreList.appendChild(coreSelect);
+    });
     const coreSelect = document.createElement('select');
     coreSelect.innerHTML = `
         <option value="CCD">CCD</option>
@@ -24,8 +49,17 @@ andButton.addEventListener('click', function() {
         <option value="WC">WC</option>
         <option value="QQ">QQ</option>
         <option value="QR">QR</option>`;
-    coresDiv.appendChild(coreSelect);
-});
+    if(!firstTime) {
+        const orPara = document.createElement('p');
+        orPara.textContent = 'OR';
+        coreGroup.appendChild(orPara);
+    }
+    coreList.appendChild(coreSelect);
+    coreGroup.appendChild(coreList);
+    coreGroup.appendChild(andButton);
+    coresDiv.appendChild(coreGroup);
+}
+addCoreGroup(true);
 fetch(`${apiUrl}/user/courses`, {
     method: 'GET',
     headers: {
@@ -51,13 +85,13 @@ fetch(`${apiUrl}/user/courses`, {
             window.location.href = 'login.html';
         });
         searchButton.addEventListener('click', function() {
-            const cores = Array.from(coresDiv.querySelectorAll('select')).map(select => select.value);
+            const cores = Array.from(coresDiv.querySelectorAll('.core-group')).map(group => Array.from(group.querySelectorAll('select')).map(select => select.value));
             fetch(`${apiUrl}/courses/course-list`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify([cores])
+                body: JSON.stringify(cores)
             }).then(response => response.json())
              .then(courses => {
                     courseList.innerHTML = ''; // Clear previous results
@@ -133,3 +167,8 @@ window.addEventListener('storage', function(event) {
     location.reload();
 });
 
+
+orButton = document.getElementById('or-button');
+orButton.addEventListener('click', function() {
+    addCoreGroup();
+});
