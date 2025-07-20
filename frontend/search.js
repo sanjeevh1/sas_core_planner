@@ -6,33 +6,6 @@ const coresTable = document.getElementById('cores');
 function addCoreGroup(firstTime = false) {
     const coreGroup = coresTable.insertRow(-1);
     coreGroup.className = 'core-group';
-    const andButton = document.createElement('button');
-    andButton.textContent = 'AND';
-    const coreList = document.createElement('div');
-    coreList.className = 'core-list';
-
-    andButton.addEventListener('click', function() {
-        const andCell = coreGroup.insertCell(coreGroup.cells.length - 1);
-        andCell.textContent = 'AND';
-        const coreSelect = document.createElement('select');
-        coreSelect.innerHTML = `
-            <option value="CCD">CCD</option>
-            <option value="CCO">CCO</option>
-            <option value="NS">NS</option>
-            <option value="SCL">SCL</option>
-            <option value="HST">HST</option>
-            <option value="AHo">AHo</option>
-            <option value="AHp">AHp</option>
-            <option value="AHq">AHq</option>
-            <option value="AHr">AHr</option>
-            <option value="WCr">WCr</option>
-            <option value="WCd">WCd</option>
-            <option value="WC">WC</option>
-            <option value="QQ">QQ</option>
-            <option value="QR">QR</option>`;
-        const selectCell = coreGroup.insertCell(coreGroup.cells.length - 1);
-        selectCell.appendChild(coreSelect);
-    });
     const coreSelect = document.createElement('select');
     coreSelect.innerHTML = `
         <option value="CCD">CCD</option>
@@ -55,8 +28,49 @@ function addCoreGroup(firstTime = false) {
     }
     const selectCell = coreGroup.insertCell(-1);
     selectCell.appendChild(coreSelect);
+    const andButton = document.createElement('button');
+    andButton.textContent = 'AND';
+    const coreList = document.createElement('div');
+    coreList.className = 'core-list';
     const andButtonCell = coreGroup.insertCell(-1);
     andButtonCell.appendChild(andButton);
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '-';
+    deleteButton.disabled = true;
+    const deleteCell = coreGroup.insertCell(-1);
+    deleteCell.appendChild(deleteButton);
+    deleteButton.addEventListener('click', function() {
+        coreGroup.deleteCell(coreGroup.cells.length - 3);
+        coreGroup.deleteCell(coreGroup.cells.length - 3);
+        if(coreGroup.cells.length < 5) {
+            deleteButton.disabled = true;
+        }
+    });
+    andButton.addEventListener('click', function() {
+        const andCell = coreGroup.insertCell(coreGroup.cells.length - 2);
+        andCell.textContent = 'AND';
+        const coreSelect = document.createElement('select');
+        coreSelect.innerHTML = `
+            <option value="CCD">CCD</option>
+            <option value="CCO">CCO</option>
+            <option value="NS">NS</option>
+            <option value="SCL">SCL</option>
+            <option value="HST">HST</option>
+            <option value="AHo">AHo</option>
+            <option value="AHp">AHp</option>
+            <option value="AHq">AHq</option>
+            <option value="AHr">AHr</option>
+            <option value="WCr">WCr</option>
+            <option value="WCd">WCd</option>
+            <option value="WC">WC</option>
+            <option value="QQ">QQ</option>
+            <option value="QR">QR</option>`;
+        const selectCell = coreGroup.insertCell(coreGroup.cells.length - 2);
+        selectCell.appendChild(coreSelect);
+        deleteButton.disabled = false;
+    });
+
+
 }
 addCoreGroup(true);
 fetch(`${apiUrl}/user/courses`, {
