@@ -8,12 +8,12 @@ const codesTaken = {
     "NS": 0,
     "SCL": 0,
     "HST": 0,
-    "AHO": 0,
-    "AHP": 0,
-    "AHQ": 0,
-    "AHR": 0,
-    "WCR": 0,
-    "WCD": 0,
+    "AHo": 0,
+    "AHp": 0,
+    "AHq": 0,
+    "AHr": 0,
+    "WCr": 0,
+    "WCd": 0,
     "WC": 0,
     "QQ": 0,
     "QR": 0
@@ -21,10 +21,12 @@ const codesTaken = {
 const categoriesTaken = {
     "CCD/CCO": 0,
     "SCL/HST": 0,
-    "AHO/AHP/AHQ/AHR": 0,
-    "WCR/WCD": 0,
+    "AHo/AHp/AHq/AHr": 0,
+    "WCr/WCd": 0,
     "QQ/QR": 0
 };
+let ahCodesTaken = 0;
+const ahCodes = document.getElementById("AH-codes");
 fetch(`${apiUrl}/user/courses`, {
     method: 'GET',
     headers: {
@@ -91,38 +93,5 @@ fetch(`${apiUrl}/user/courses`, {
                     }
                 });
             });
-            /*const row = document.createElement('tr');
-            const nameCell = document.createElement('td');
-            const codeCell = document.createElement('td');
-            const coreCell = document.createElement('td');
-            const actionCell = document.createElement('td');
-
-            nameCell.textContent = course.name;
-            codeCell.textContent = course.code;
-            coreCell.textContent = course.core ? 'Yes' : 'No';
-
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.addEventListener('click', function() {
-                fetch(`${apiUrl}/user/courses/${course.id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                }).then(response => {
-                    if (response.ok) {
-                        row.remove();
-                    } else {
-                        alert('Failed to delete course.');
-                    }
-                });
-            });
-
-            actionCell.appendChild(deleteButton);
-            row.appendChild(nameCell);
-            row.appendChild(codeCell);
-            row.appendChild(coreCell);
-            row.appendChild(actionCell);
-            courseTable.appendChild(row);*/
         });
 });
