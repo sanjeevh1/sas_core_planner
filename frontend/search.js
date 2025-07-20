@@ -104,7 +104,7 @@ fetch(`${apiUrl}/user/courses`, {
                         if (response.ok) {
                             return response.json();
                         } else {
-                            window.location.href = 'login.html';
+                            location.reload();
                         }
                     }).then(takenCourses => {
                         courses.forEach(course => {
@@ -137,8 +137,10 @@ fetch(`${apiUrl}/user/courses`, {
                                         if (response.ok) {
                                             addButton.textContent = '-';
                                         } else {
-                                            alert('Failed to add course.');
+                                            location.reload();
                                         }
+                                    }).catch(error => {
+                                        window.location.href = 'login.html';
                                     });
                                 } else {
                                     fetch(`${apiUrl}/user/remove/${course.id}`, {
@@ -150,18 +152,25 @@ fetch(`${apiUrl}/user/courses`, {
                                         if (response.ok) {
                                             addButton.textContent = '+';
                                         } else {
-                                            alert('Failed to remove course.');
+                                            location.reload();
                                         }
+                                    }).catch(error => {
+                                        location.reload();
                                     });
                                 }
                             });
                             courseDiv.appendChild(addButton);
                             courseList.appendChild(courseDiv);
                         });
-
+                    }).catch(error => {
+                        location.reload();
                     });
+             }).catch(error => {
+                location.reload();
              });
         });
+}).catch(error => {
+    window.location.href = 'login.html';
 });
 window.addEventListener('storage', function(event) {
     location.reload();

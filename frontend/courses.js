@@ -86,12 +86,12 @@ fetch(`${apiUrl}/user/courses`, {
                         "Authorization": `Bearer ${localStorage.getItem('token')}`
                     }
                 }).then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Failed to remove course.');
-                    }
+                    location.reload();
+                }).catch(error => {
+                    window.location.href = 'login.html';
                 });
             });
         });
+}).catch(error => {
+    window.location.href = 'login.html';
 });
