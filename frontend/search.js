@@ -178,8 +178,16 @@ window.addEventListener('storage', function(event) {
     location.reload();
 });
 
+deleteRowButton = document.getElementById('delete-row');
+deleteRowButton.addEventListener('click', function() {
+    coresTable.deleteRow(-1);
+    if(coresTable.rows.length === 1) {
+        deleteRowButton.disabled = true;
+    }
+});
 
 orButton = document.getElementById('or-button');
 orButton.addEventListener('click', function() {
     addCoreGroup();
+    deleteRowButton.disabled = false;
 });
