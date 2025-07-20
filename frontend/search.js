@@ -2,9 +2,9 @@ const apiUrl = 'http://localhost:8080';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
-coresDiv = document.getElementById('cores');
+const coresTable = document.getElementById('cores');
 function addCoreGroup(firstTime = false) {
-    const coreGroup = document.createElement('div');
+    const coreGroup = coresTable.insertRow(-1);
     coreGroup.className = 'core-group';
     const andButton = document.createElement('button');
     andButton.textContent = 'AND';
@@ -12,9 +12,8 @@ function addCoreGroup(firstTime = false) {
     coreList.className = 'core-list';
 
     andButton.addEventListener('click', function() {
-        const andPara = document.createElement('p');
-        andPara.textContent = 'AND';
-        coreList.appendChild(andPara);
+        const andCell = coreGroup.insertCell(coreGroup.cells.length - 1);
+        andCell.textContent = 'AND';
         const coreSelect = document.createElement('select');
         coreSelect.innerHTML = `
             <option value="CCD">CCD</option>
@@ -31,7 +30,8 @@ function addCoreGroup(firstTime = false) {
             <option value="WC">WC</option>
             <option value="QQ">QQ</option>
             <option value="QR">QR</option>`;
-        coreList.appendChild(coreSelect);
+        const selectCell = coreGroup.insertCell(coreGroup.cells.length - 1);
+        selectCell.appendChild(coreSelect);
     });
     const coreSelect = document.createElement('select');
     coreSelect.innerHTML = `
@@ -50,14 +50,13 @@ function addCoreGroup(firstTime = false) {
         <option value="QQ">QQ</option>
         <option value="QR">QR</option>`;
     if(!firstTime) {
-        const orPara = document.createElement('p');
-        orPara.textContent = 'OR';
-        coreGroup.appendChild(orPara);
+        const orCell = coreGroup.insertCell(0)
+        orCell.textContent = 'OR';
     }
-    coreList.appendChild(coreSelect);
-    coreGroup.appendChild(coreList);
-    coreGroup.appendChild(andButton);
-    coresDiv.appendChild(coreGroup);
+    const selectCell = coreGroup.insertCell(-1);
+    selectCell.appendChild(coreSelect);
+    const andButtonCell = coreGroup.insertCell(-1);
+    andButtonCell.appendChild(andButton);
 }
 addCoreGroup(true);
 fetch(`${apiUrl}/user/courses`, {
@@ -85,7 +84,7 @@ fetch(`${apiUrl}/user/courses`, {
             window.location.href = 'login.html';
         });
         searchButton.addEventListener('click', function() {
-            const cores = Array.from(coresDiv.querySelectorAll('.core-group')).map(group => Array.from(group.querySelectorAll('select')).map(select => select.value));
+            const cores = Array.from(coresTable.rows).map(row => Array.from(row.querySelectorAll('select')).map(select => select.value));
             fetch(`${apiUrl}/courses/course-list`, {
                 method: 'POST',
                 headers: {
