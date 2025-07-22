@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:8080';
+const apiUrl = 'http://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
