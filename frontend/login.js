@@ -1,4 +1,4 @@
-const apiUrl = 'http://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net';
+const apiUrl = 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net';
 const usernameField = document.getElementById('username');
 const passwordField = document.getElementById('password');
 const loginButton = document.getElementById('login');

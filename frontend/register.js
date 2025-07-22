@@ -2,7 +2,7 @@ const usernameField = document.getElementById('username');
 const passwordField = document.getElementById('password');
 const registerButton = document.getElementById('register');
 const errorField = document.getElementById('error');
-const apiUrl = 'http://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net';
+const apiUrl = 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net';
 registerButton.addEventListener('click', function() {
     const username = usernameField.value;
     const password = passwordField.value;
