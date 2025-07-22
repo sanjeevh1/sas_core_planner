@@ -4,8 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +18,6 @@ import java.io.IOException;
  * JwtRequestFilter is a filter that checks for JWT in the Authorization header of incoming requests.
  */
 @Component
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -29,6 +25,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    public JwtRequestFilter(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
+        this.jwtUtil = jwtUtil;
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     /**
      * This method is called for every request to check if the JWT is valid and set the authentication in the security context.

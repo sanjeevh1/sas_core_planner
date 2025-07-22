@@ -3,10 +3,6 @@ package org.example.course;
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -14,15 +10,11 @@ import java.util.List;
  * A class containing the information for a Course.
  */
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Course {
 
-    private @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @CsvBindByName(column = "Course ID")
     private String courseNumber;
@@ -45,5 +37,50 @@ public class Course {
 
     @CsvBindByName(column = "Subject")
     private String subject;
+
+    public Course(Long id, String courseNumber, String courseTitle, float credits, List<CoreCode> coreCodes, String subject) {
+        this.courseNumber = courseNumber;
+        this.courseTitle = courseTitle;
+        this.credits = credits;
+        this.coreCodes = coreCodes;
+        this.subject = subject;
+    }
+    public Course() {}
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getCourseNumber() {
+        return courseNumber;
+    }
+    public void setCourseNumber(String courseNumber) {
+        this.courseNumber = courseNumber;
+    }
+    public String getCourseTitle() {
+        return courseTitle;
+    }
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+    public float getCredits() {
+        return credits;
+    }
+    public void setCredits(float credits) {
+        this.credits = credits;
+    }
+    public List<CoreCode> getCoreCodes() {
+        return coreCodes;
+    }
+    public void setCoreCodes(List<CoreCode> coreCodes) {
+        this.coreCodes = coreCodes;
+    }
+    public String getSubject() {
+        return subject;
+    }
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
 }
