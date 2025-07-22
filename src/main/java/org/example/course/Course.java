@@ -39,13 +39,17 @@ public class Course {
     private String subject;
 
     public Course(Long id, String courseNumber, String courseTitle, float credits, List<CoreCode> coreCodes, String subject) {
+        this.id = id;
         this.courseNumber = courseNumber;
         this.courseTitle = courseTitle;
         this.credits = credits;
         this.coreCodes = coreCodes;
         this.subject = subject;
     }
-    public Course() {}
+    public Course() {
+        // Default constructor for JPA
+        this.coreCodes = List.of();
+    }
     public Long getId() {
         return id;
     }

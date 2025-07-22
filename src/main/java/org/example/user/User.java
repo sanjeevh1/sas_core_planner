@@ -30,11 +30,15 @@ public class User {
     private List<Course> courses;
 
     public User(Long id, String username, String password, List<Course> courses) {
+        this.id = id;
         this.username = username;
         this.password = password;
+        this.courses = courses;
     }
 
-    public User() {}
+    public User() {
+        courses = List.of();
+    }
     public Long getId() {
         return id;
     }
