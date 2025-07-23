@@ -26,6 +26,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * Constructor for JwtRequestFilter.
+     * @param jwtUtil the utility class for JWT operations
+     * @param customUserDetailsService the service to load user details
+     */
     public JwtRequestFilter(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
         this.jwtUtil = jwtUtil;
         this.customUserDetailsService = customUserDetailsService;

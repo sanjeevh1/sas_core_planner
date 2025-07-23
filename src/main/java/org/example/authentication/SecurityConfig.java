@@ -39,6 +39,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Creates an AuthenticationManager bean that is used for authenticating users.
+     * @param authenticationConfiguration the configuration for authentication
+     * @return the AuthenticationManager bean
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
