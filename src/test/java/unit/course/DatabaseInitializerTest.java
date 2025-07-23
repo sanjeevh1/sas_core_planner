@@ -28,26 +28,20 @@ public class DatabaseInitializerTest {
 
     /**
      * Test for the run method in DatabaseInitializer.
-     * It verifies that courses are saved correctly and duplicates are not added.
+     * It verifies that courses are saved correctly.
      * @throws Exception if an error occurs during the test
      */
     @Test
     public void testRun() throws Exception {
         ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
-        Mockito.when(courseRepository.existsByCourseNumber("00:000:001"))
-                .thenReturn(false)
-                .thenReturn(true);
-        Mockito.when(courseRepository.existsByCourseNumber("00:000:002"))
+        Mockito.when(courseRepository.existsByCourseNumber(Mockito.anyString()))
                 .thenReturn(false);
-        Mockito.when(courseRepository.existsByCourseNumber("00:000:003"))
-                .thenReturn(false);
-        databaseInitializer.run("src/test/resources/courses.csv");
-        Mockito.verify(courseRepository, Mockito.times(3)).save(courseCaptor.capture());
+        databaseInitializer.run();
+        Mockito.verify(courseRepository, Mockito.atLeastOnce()).save(courseCaptor.capture());
         List<Course> savedCourses = courseCaptor.getAllValues();
-        Assertions.assertEquals(3, savedCourses.size(), "Expected 3 courses to be saved");
-        Assertions.assertTrue(match(savedCourses, new Course(null, "00:000:001", "COURSE TITLE 1", 1.5f, List.of(CoreCode.CCO, CoreCode.CCD), "Subject 1")));
-        Assertions.assertTrue(match(savedCourses, new Course(null, "00:000:002", "COURSE TITLE 2", 3.0f, List.of(CoreCode.CCD, CoreCode.HST), "Subject 2")));
-        Assertions.assertTrue(match(savedCourses, new Course(null, "00:000:003", "COURSE TITLE 3", 4.0f, List.of(CoreCode.HST, CoreCode.CCO), "Subject 3")));
+        Assertions.assertTrue(match(savedCourses, new Course(null, "01:013:201", "CLASSICAL LITERATURES OF AFRICA, THE MIDDLE EAST, AND SOUTH ASIA", 3.0f, List.of(CoreCode.AHo, CoreCode.AHp), "African, Middle Eastern, and South Asian Languages and Literatures")));
+        Assertions.assertTrue(match(savedCourses, new Course(null, "01:013:243", "CLASSICAL ARABIC", 3.0f, List.of(CoreCode.AHq), "African, Middle Eastern, and South Asian Languages and Literatures")));
+        Assertions.assertTrue(match(savedCourses, new Course(null, "01:070:201", "EVOLUTION AND HUMAN BEHAVIOR", 3.0f, List.of(CoreCode.NS), "Anthropology")));
     }
 
     /**

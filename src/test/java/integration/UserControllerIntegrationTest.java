@@ -2,6 +2,7 @@ package integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.authentication.AuthResponse;
+import org.example.course.CoreCode;
 import org.example.course.Course;
 import org.example.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -22,10 +23,7 @@ import java.util.List;
 /**
  * Integration tests for UserController.
  */
-@SpringBootTest(
-        classes = org.example.CourseApplication.class,
-        args = {"src/test/resources/courses.csv"}
-)
+@SpringBootTest(classes = org.example.CourseApplication.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -81,10 +79,13 @@ public class UserControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/user/add/" + courseId)
                         .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
+        MvcResult userCoursesResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/courses")
                         .header("Authorization", header))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].courseNumber").value("00:000:001"));
+                .andReturn();
+        String userCoursesJson = userCoursesResult.getResponse().getContentAsString();
+        List<Course> userCourses = objectMapper.readValue(userCoursesJson, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
+        Assertions.assertTrue(userCourses.stream().allMatch(course -> course.getCoreCodes().contains(CoreCode.CCO) && course.getCoreCodes().contains(CoreCode.CCD)));
     }
 
     /**

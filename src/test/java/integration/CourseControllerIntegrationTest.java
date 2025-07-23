@@ -18,10 +18,7 @@ import java.util.List;
 /**
  * Course Controller Integration Test
  */
-@SpringBootTest(
-        classes = org.example.CourseApplication.class,
-        args = {"src/test/resources/courses.csv"}
-)
+@SpringBootTest(classes = org.example.CourseApplication.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -46,8 +43,8 @@ public class CourseControllerIntegrationTest {
         String responseContent = result.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         List<Course> courses = objectMapper.readValue(responseContent, objectMapper.getTypeFactory().constructCollectionType(List.class, Course.class));
-        Assertions.assertEquals(2, courses.size(), "Expected 2 courses to be returned");
-        Assertions.assertTrue(courses.stream().anyMatch(course -> course.getCourseNumber().equals("00:000:001")), "Course One should be returned");
-        Assertions.assertTrue(courses.stream().anyMatch(course -> course.getCourseNumber().equals("00:000:003")), "Course Two should be returned");
+        Assertions.assertTrue(courses.stream().anyMatch(course -> course.getCourseNumber().equals("01:013:285")));
+        Assertions.assertTrue(courses.stream().anyMatch(course -> course.getCourseNumber().equals("01:070:283")));
+        Assertions.assertFalse(courses.stream().anyMatch(course -> course.getCourseNumber().equals("01:013:217")));
     }
 }

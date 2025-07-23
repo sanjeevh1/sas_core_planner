@@ -2,7 +2,8 @@ const usernameField = document.getElementById('username');
 const passwordField = document.getElementById('password');
 const registerButton = document.getElementById('register');
 const errorField = document.getElementById('error');
-const apiUrl = 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net';
+const production = false
+const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
 registerButton.addEventListener('click', function() {
     const username = usernameField.value;
     const password = passwordField.value;
