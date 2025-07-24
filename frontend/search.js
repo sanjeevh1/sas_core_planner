@@ -1,5 +1,6 @@
 const production = false
-const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
+//const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
+const apiUrl = 'https://sas-core-planner-latest.onrender.com'
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }

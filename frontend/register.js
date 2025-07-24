@@ -3,7 +3,8 @@ const passwordField = document.getElementById('password');
 const registerButton = document.getElementById('register');
 const errorField = document.getElementById('error');
 const production = false
-const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
+//const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
+const apiUrl = 'https://sas-core-planner-latest.onrender.com'
 registerButton.addEventListener('click', function() {
     const username = usernameField.value;
     const password = passwordField.value;
