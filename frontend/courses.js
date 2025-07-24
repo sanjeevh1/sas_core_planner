@@ -1,5 +1,5 @@
-//const apiUrl = 'http://localhost:8080';
-const apiUrl = 'https://sas-core-planner-latest.onrender.com'
+const apiUrl = 'http://localhost:8080';
+//const apiUrl = 'https://sas-core-planner-latest.onrender.com'
 
 const codesTaken = {
     "CCD": 0,

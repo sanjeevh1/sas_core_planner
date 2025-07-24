@@ -1,46 +1,59 @@
 const production = false
 //const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
-const apiUrl = 'https://sas-core-planner-latest.onrender.com'
+const apiUrl =  'http://localhost:8080' //'https://sas-core-planner-latest.onrender.com'
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
 const coresTable = document.getElementById('cores');
-function addCoreGroup(firstTime = false) {
-    const coreGroup = coresTable.insertRow(-1);
-    coreGroup.className = 'core-group';
-    const coreSelect = document.createElement('select');
-    coreSelect.innerHTML = `
-        <option value="CCD">CCD</option>
-        <option value="CCO">CCO</option>
-        <option value="NS">NS</option>
-        <option value="SCL">SCL</option>
-        <option value="HST">HST</option>
-        <option value="AHo">AHo</option>
-        <option value="AHp">AHp</option>
-        <option value="AHq">AHq</option>
-        <option value="AHr">AHr</option>
-        <option value="WCr">WCr</option>
-        <option value="WCd">WCd</option>
-        <option value="WC">WC</option>
-        <option value="QQ">QQ</option>
-        <option value="QR">QR</option>`;
-    if(!firstTime) {
-        const orCell = coreGroup.insertCell(0)
-        orCell.textContent = 'OR';
+const cores = ['CCD', 'CCO', 'NS', 'SCL', 'HST', 'AHo', 'AHp', 'AHq', 'AHr', 'WCr', 'WCd', 'WC', 'QQ', 'QR'];
+let userCourses;
+
+function loadUsername() {
+    const usernameField = document.getElementById('username');
+    const username = localStorage.getItem('username');
+    usernameField.textContent = username;
+}
+
+function parseResponse(response) {
+    if (response.ok) {
+        return response.json();
+    } else {
+        window.location.href = 'login.html';
     }
-    const selectCell = coreGroup.insertCell(-1);
-    selectCell.appendChild(coreSelect);
+}
+
+function createCoreSelect() {
+    const coreSelect = document.createElement('select');
+    for(const core of cores) {
+        const option = document.createElement('option');
+        option.value = core;
+        option.textContent = core;
+        coreSelect.appendChild(option);
+    }
+    return coreSelect;
+}
+
+function addCoreSelect(coreGroup, deleteButton) {
+    const andCell = coreGroup.insertCell(coreGroup.cells.length - 2);
+    andCell.textContent = 'AND';
+    const selectCell = coreGroup.insertCell(coreGroup.cells.length - 2);
+    selectCell.appendChild(createCoreSelect());
+    deleteButton.disabled = false;
+}
+
+function createAndButton(coreGroup, deleteButton) {
     const andButton = document.createElement('button');
     andButton.textContent = 'AND';
-    const coreList = document.createElement('div');
-    coreList.className = 'core-list';
-    const andButtonCell = coreGroup.insertCell(-1);
-    andButtonCell.appendChild(andButton);
+    andButton.addEventListener('click', function() {
+        addCoreSelect(coreGroup, deleteButton);
+    });
+    return andButton;
+}
+
+function createDeleteButton(coreGroup) {
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '-';
     deleteButton.disabled = true;
-    const deleteCell = coreGroup.insertCell(-1);
-    deleteCell.appendChild(deleteButton);
     deleteButton.addEventListener('click', function() {
         coreGroup.deleteCell(coreGroup.cells.length - 3);
         coreGroup.deleteCell(coreGroup.cells.length - 3);
@@ -48,153 +61,134 @@ function addCoreGroup(firstTime = false) {
             deleteButton.disabled = true;
         }
     });
-    andButton.addEventListener('click', function() {
-        const andCell = coreGroup.insertCell(coreGroup.cells.length - 2);
-        andCell.textContent = 'AND';
-        const coreSelect = document.createElement('select');
-        coreSelect.innerHTML = `
-            <option value="CCD">CCD</option>
-            <option value="CCO">CCO</option>
-            <option value="NS">NS</option>
-            <option value="SCL">SCL</option>
-            <option value="HST">HST</option>
-            <option value="AHo">AHo</option>
-            <option value="AHp">AHp</option>
-            <option value="AHq">AHq</option>
-            <option value="AHr">AHr</option>
-            <option value="WCr">WCr</option>
-            <option value="WCd">WCd</option>
-            <option value="WC">WC</option>
-            <option value="QQ">QQ</option>
-            <option value="QR">QR</option>`;
-        const selectCell = coreGroup.insertCell(coreGroup.cells.length - 2);
-        selectCell.appendChild(coreSelect);
-        deleteButton.disabled = false;
-    });
-
-
+    return deleteButton;
 }
-addCoreGroup(true);
-fetch(`${apiUrl}/user/courses`, {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+
+function addCoreGroup(firstTime = false) {
+    const coreGroup = coresTable.insertRow(-1);
+    coreGroup.className = 'core-group';
+    if(!firstTime) {
+        const orCell = coreGroup.insertCell(0)
+        orCell.textContent = 'OR';
     }
-}).then(response => {
-    if (response.ok) {
-        return response.json();
+    const selectCell = coreGroup.insertCell(-1);
+    selectCell.appendChild(createCoreSelect());
+    createAndButton(coreGroup);
+    const deleteButton = createDeleteButton(coreGroup);
+    const andButton = createAndButton(coreGroup, deleteButton);
+    const andButtonCell = coreGroup.insertCell(-1);
+    andButtonCell.appendChild(andButton);
+    const deleteCell = coreGroup.insertCell(-1);
+    deleteCell.appendChild(deleteButton);
+}
+
+function toggleCourse(addButton, courseId) {
+    let methodType, endpoint, newText;
+    if(addButton.textContent === '+') {
+        methodType = 'POST';
+        endpoint = 'add';
+        newText = '-';
     } else {
-        window.location.href = 'login.html';
+        methodType = 'DELETE';
+        endpoint = 'remove';
+        newText = '+';
     }
-}).then(userCourses => {
-        const usernameField = document.getElementById('username');
-        const logoutButton = document.getElementById('logout');
-        const searchButton = document.getElementById('search');
-        const courseList = document.getElementById('course-list');
-        const username = localStorage.getItem('username');
-        const coreField = document.getElementById('core');
-        usernameField.textContent = username;
-        logoutButton.addEventListener('click', function() {
-            localStorage.removeItem('username');
-            localStorage.removeItem('token');
+    fetch(`${apiUrl}/user/${endpoint}/${courseId}`, {
+        method: methodType,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => {
+        if (response.ok) {
+            addButton.textContent = newText;
+        } else {
             window.location.href = 'login.html';
-        });
-        searchButton.addEventListener('click', function() {
-            const cores = Array.from(coresTable.rows).map(row => Array.from(row.querySelectorAll('select')).map(select => select.value));
-            fetch(`${apiUrl}/courses/course-list`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(cores)
-            }).then(response => response.json())
-             .then(courses => {
-                    courseList.innerHTML = `
-                        <tr>
-                            <th>Course No.</th>
-                            <th>Title</th>
-                            <th>Credits</th>
-                            <th>Core Codes</th>
-                            <th>Subject</th>
-                            <th>Add/Remove</th>
-                        </tr>`; // Clear previous results
-                    fetch(`${apiUrl}/user/courses`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        }
-                    }).then(response => {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            location.reload();
-                        }
-                    }).then(takenCourses => {
-                        courses.forEach(course => {
-                            let courseRow = courseList.insertRow(-1);
-                            let courseNumber = courseRow.insertCell(-1);
-                            courseNumber.textContent = course.courseNumber;
-                            let courseTitle = courseRow.insertCell(-1);
-                            courseTitle.textContent = course.courseTitle;
-                            let credits = courseRow.insertCell(-1);
-                            credits.textContent = course.credits;
-                            let coreCodes = courseRow.insertCell(-1);
-                            coreCodes.textContent = course.coreCodes.join(", ");
-                            let subject = courseRow.insertCell(-1);
-                            subject.textContent = course.subject;
-                            let addButton = document.createElement('button');
-                            addButton.textContent = takenCourses.some(c => c.id === course.id) ? '-' : '+';
-                            addButton.addEventListener('click', function() {
-                                if( addButton.textContent === '+') {
-                                    fetch(`${apiUrl}/user/add/${course.id}`, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                                        }
-                                    }).then(response => {
-                                        if (response.ok) {
-                                            addButton.textContent = '-';
-                                        } else {
-                                            location.reload();
-                                        }
-                                    }).catch(error => {
-                                        window.location.href = 'login.html';
-                                    });
-                                } else {
-                                    fetch(`${apiUrl}/user/remove/${course.id}`, {
-                                        method: 'DELETE',
-                                        headers: {
-                                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                                        }
-                                    }).then(response => {
-                                        if (response.ok) {
-                                            addButton.textContent = '+';
-                                        } else {
-                                            location.reload();
-                                        }
-                                    }).catch(error => {
-                                        location.reload();
-                                    });
-                                }
-                            });
-                            let buttonCell = courseRow.insertCell(-1);
-                            buttonCell.appendChild(addButton);
-                        });
-                    }).catch(error => {
-                        location.reload();
-                    });
-             }).catch(error => {
-                location.reload();
-             });
-        });
-}).catch(error => {
+        }
+    }).catch(error => {
+        window.location.href = 'login.html';
+    });
+}
+
+const courseList = document.getElementById('course-list');
+function addCourseRow(course) {
+    let courseRow = courseList.insertRow(-1);
+    let courseNumber = courseRow.insertCell(-1);
+    courseNumber.textContent = course.courseNumber;
+    let courseTitle = courseRow.insertCell(-1);
+    courseTitle.textContent = course.courseTitle;
+    let credits = courseRow.insertCell(-1);
+    credits.textContent = course.credits;
+    let coreCodes = courseRow.insertCell(-1);
+    coreCodes.textContent = course.coreCodes.join(", ");
+    let subject = courseRow.insertCell(-1);
+    subject.textContent = course.subject;
+    let addButton = document.createElement('button');
+    addButton.textContent = userCourses.some(c => c.id === course.id) ? '-' : '+';
+    addButton.addEventListener('click', function() {
+        toggleCourse(addButton, course.id);
+    });
+    let buttonCell = courseRow.insertCell(-1);
+    buttonCell.appendChild(addButton);
+}
+
+function loadCourses(courses) {
+    clearCourseList();
+    fetch(`${apiUrl}/user/courses`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            location.reload();
+        }
+    }).then(takenCourses => {
+        userCourses = takenCourses;
+        courses.forEach(addCourseRow);
+    }).catch(error => {
+        location.reload();
+    });
+}
+
+function clearCourseList() {
+    courseList.innerHTML = `
+        <tr>
+            <th>Course No.</th>
+            <th>Title</th>
+            <th>Credits</th>
+            <th>Core Codes</th>
+            <th>Subject</th>
+            <th>Add/Remove</th>
+        </tr>`;
+}
+
+addCoreGroup(true);
+loadUsername();
+
+const searchButton = document.getElementById('search');
+searchButton.addEventListener('click', function () {
+   const cores = Array.from(coresTable.rows).map(row => Array.from(row.querySelectorAll('select')).map(select => select.value));
+   fetch(`${apiUrl}/courses/course-list`, {
+       method: 'POST',
+       headers: {
+           'Content-Type': 'application/json'
+       },
+       body: JSON.stringify(cores)
+   }).then(response => response.json()).then(loadCourses).catch(error => {
+       location.reload();
+    });
+});
+
+const logoutButton = document.getElementById('logout');
+logoutButton.addEventListener('click', function() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
     window.location.href = 'login.html';
 });
-window.addEventListener('storage', function(event) {
-    location.reload();
-});
 
-deleteRowButton = document.getElementById('delete-row');
+const deleteRowButton = document.getElementById('delete-row');
 deleteRowButton.addEventListener('click', function() {
     coresTable.deleteRow(-1);
     if(coresTable.rows.length === 1) {
@@ -202,7 +196,7 @@ deleteRowButton.addEventListener('click', function() {
     }
 });
 
-orButton = document.getElementById('or-button');
+const orButton = document.getElementById('or-button');
 orButton.addEventListener('click', function() {
     addCoreGroup();
     deleteRowButton.disabled = false;
