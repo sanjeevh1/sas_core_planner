@@ -1,5 +1,5 @@
 const production = false;
-const apiUrl =  'https://sas-core-planner-latest.onrender.com';
+const apiUrl =  'https://localhost:8080';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
