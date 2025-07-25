@@ -21,7 +21,6 @@ loginButton.addEventListener('click', function() {
             if (response.ok) {
                 return response.json();
             } else {
-                return null;
                 errorField.textContent = 'Incorrect username or password.';
             }
         }).then(data => {
