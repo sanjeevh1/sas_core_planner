@@ -1,11 +1,17 @@
 const production = false;
-const apiUrl =  'http://localhost:8080';
+const apiUrl =  'https://sas-core-planner-latest.onrender.com';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
 const coresTable = document.getElementById('cores');
 const cores = ['CCD', 'CCO', 'NS', 'SCL', 'HST', 'AHo', 'AHp', 'AHq', 'AHr', 'WCr', 'WCd', 'WC', 'QQ', 'QR'];
 let userCourses;
+
+function logout() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    window.location.href = 'login.html';
+}
 
 function loadUsername() {
     const usernameField = document.getElementById('username');
@@ -101,10 +107,10 @@ function toggleCourse(addButton, courseId) {
         if (response.ok) {
             addButton.textContent = newText;
         } else {
-            window.location.href = 'login.html';
+            logout();
         }
     }).catch(error => {
-        window.location.href = 'login.html';
+        logout();
     });
 }
 
@@ -141,13 +147,13 @@ function loadCourses(courses) {
         if (response.ok) {
             return response.json();
         } else {
-            location.reload();
+            logout();
         }
     }).then(takenCourses => {
         userCourses = takenCourses;
         courses.forEach(addCourseRow);
     }).catch(error => {
-        location.reload();
+        logout();
     });
 }
 
@@ -181,11 +187,7 @@ searchButton.addEventListener('click', function () {
 });
 
 const logoutButton = document.getElementById('logout');
-logoutButton.addEventListener('click', function() {
-    localStorage.removeItem('username');
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
-});
+logoutButton.addEventListener('click', logout);
 
 const deleteRowButton = document.getElementById('delete-row');
 deleteRowButton.addEventListener('click', function() {

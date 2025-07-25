@@ -1,5 +1,5 @@
 const production = false
-const apiUrl =  'http://localhost:8080'
+const apiUrl =  'https://sas-core-planner-latest.onrender.com'
 const usernameField = document.getElementById('username');
 const passwordField = document.getElementById('password');
 const loginButton = document.getElementById('login');

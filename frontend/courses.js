@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:8080';
+const apiUrl = 'https://sas-core-planner-latest.onrender.com';
 
 const codesTaken = {
     "CCD": 0,
@@ -29,11 +29,17 @@ const courseTable = document.getElementById('course-table');
 let ahCodesTaken = 0;
 const ahCodes = document.getElementById("AH-codes");
 
+function logout() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    window.location.href = 'login.html';
+}
+
 function parseResponse(response) {
     if (response.ok) {
         return response.json();
     } else {
-        window.location.href = 'login.html';
+        logout();
     }
 }
 
@@ -73,7 +79,7 @@ function removeCourse(courseId) {
     }).then(response => {
        location.reload();
     }).catch(error => {
-       window.location.href = 'login.html';
+       logout();
     });
 }
 
@@ -95,12 +101,6 @@ function addCourseRow(course) {
     addCores(row, course.coreCodes);
     updateCategories(course.coreCodes);
     createRemoveButton(row, course);
-}
-
-function logout() {
-    localStorage.removeItem('username');
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
 }
 
 function addCourses(userCourses) {
