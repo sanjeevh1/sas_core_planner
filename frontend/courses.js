@@ -1,4 +1,4 @@
-const apiUrl = 'https://localhost:8080';
+const apiUrl = 'http://localhost:8080';
 
 const codesTaken = {
     "CCD": 0,

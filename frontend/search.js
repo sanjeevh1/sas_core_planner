@@ -1,5 +1,5 @@
 const production = false;
-const apiUrl =  'https://localhost:8080';
+const apiUrl =  'http://localhost:8080';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
