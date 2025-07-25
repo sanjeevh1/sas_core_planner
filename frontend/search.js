@@ -1,6 +1,5 @@
-const production = false
-//const apiUrl = production ? 'https://sas-core-h8a3hncpctaactgg.eastus-01.azurewebsites.net' : 'http://localhost:8080';
-const apiUrl =  'http://localhost:8080' //'https://sas-core-planner-latest.onrender.com'
+const production = false;
+const apiUrl =  'http://localhost:8080';
 if(localStorage.getItem('token') === null) {
     window.location.href = 'login.html';
 }
@@ -83,7 +82,7 @@ function addCoreGroup(firstTime = false) {
 }
 
 function toggleCourse(addButton, courseId) {
-    let methodType, endpoint, newText;
+    let methodType, endpoint, newText, color;
     if(addButton.textContent === '+') {
         methodType = 'POST';
         endpoint = 'add';
