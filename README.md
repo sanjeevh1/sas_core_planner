@@ -8,5 +8,5 @@ docker pull sanjeevh219/sas_core_planner:production
 
 docker run -p 8080:8080 sanjeevh219/sas_core_planner:production
 
-Then, open your browser and go to https://sanjeevh1.github.io/sas_core_planner/frontend/home.html
+Then, download the frontend folder of this repository and open home.html.
 
