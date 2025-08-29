@@ -1,7 +1,7 @@
 const logout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('token');
-    window.location.href = 'login.html';
+    window.location.href = 'sas-core-planner/login.html';
 }
 
 const apiUrl = 'https://sas-core-planner-latest.onrender.com';
