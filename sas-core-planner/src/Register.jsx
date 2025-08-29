@@ -38,7 +38,7 @@ class RegisterPage extends React.Component {
             })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = 'sas-core-planner/login.html';
+                    window.location.href = '/sas_core_planner/sas-core-planner/login.html';
                 } else {
                     this.setState({ 
                         username: '',
