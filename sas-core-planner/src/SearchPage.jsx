@@ -1,14 +1,21 @@
 import React from 'react';
 import SearchTable from './SearchTable.jsx';
 import ResultsTable from './ResultsTable.jsx';
-import { logout, apiUrl } from './config.js'
+import { apiUrl } from './config.js';
+import logout from './Logout.jsx';
+import { Navigate } from 'react-router-dom';
 
 class SearchPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            resultCourses: []
+            resultCourses: [],
+            redirect: false
         }
+    }
+    handleLogout = () => {
+        logout();
+        this.setState({ redirect: true });
     }
     getCourses = (cores) => {
         fetch(`${apiUrl}/courses/course-list`, {
@@ -22,7 +29,7 @@ class SearchPage extends React.Component {
                 return response.json();
             } else {
                 console.log("ResultsTable not ok", response.statusText);
-                logout();
+                this.handleLogout();
             }
         }).then(courses => {
             this.setState({
@@ -30,10 +37,13 @@ class SearchPage extends React.Component {
             });
         }).catch((error) => {
             console.log("ResultsTable error", error);
-            logout();
+            this.handleLogout();
         });
     }
     render() {
+        if (this.state.redirect) {
+            return <Navigate to="/login" />;
+        }
         return (
             <div>
                 <SearchTable onSearch={this.getCourses} />

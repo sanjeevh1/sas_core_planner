@@ -1,9 +1,10 @@
 import React from 'react';
-import { createRoot } from "react-dom/client";
 import TopBar from './TopBar.jsx';
 import CourseTable from './CourseTable.jsx';
 import SearchPage from './SearchPage.jsx';
-import { logout, apiUrl, cores } from './config.js';
+import { apiUrl, cores } from './config.js';
+import logout from './Logout.jsx'
+import { Navigate } from 'react-router-dom';
 
 class CoursesPage extends React.Component {
     constructor(props) {
@@ -21,10 +22,14 @@ class CoursesPage extends React.Component {
                 "WCr/WCd": 0,
                 "QQ/QR": 0
             },
-            ahCodesTaken: 0
+            ahCodesTaken: 0,
+            redirect: false
         };
     }
-
+    handleLogout = () => {
+        logout();
+        this.setState({ redirect: true });
+    }
     addCourse = (course) => {
         fetch(`${apiUrl}/user/add/${course.id}`, {
             method: "POST",
@@ -39,11 +44,11 @@ class CoursesPage extends React.Component {
                 this.addCores(course);
             } else {
                 console.log("CoursesPage addCourse status", response.statusText);
-                logout();
+                this.handleLogout();
             }
         }).catch((error) => {
             console.log("CoursesPage addCourse error", error);
-            logout();
+            this.handleLogout();
         });
     }
 
@@ -84,11 +89,11 @@ class CoursesPage extends React.Component {
                 this.removeCores(course);
             } else {
                 console.log("CoursesPage removeCourse status", response.statusText);
-                logout();
+                this.handleLogout();
             }
         }).catch((error) => {
             console.log("CoursesPage removeCourse error", error);
-            logout();
+            this.handleLogout();
         });
     }
 
@@ -152,14 +157,20 @@ class CoursesPage extends React.Component {
         fetch(`${apiUrl}/user/courses`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         })
-        .then(res => res.json())
+        .then(res => {
+            if(res.ok) {
+                return res.json();
+            } else {
+                logout();
+            }
+        })
         .then(data => {
             this.setState({ coursesTaken: data }, () => {
                 this.setCoresTaken();
             });
         })
         .catch(err => {
-            console.error("Failed to fetch courses:", err);
+            logout();
         });
     }
 
@@ -170,6 +181,9 @@ class CoursesPage extends React.Component {
     }
     
     render() {
+        if (this.state.redirect) {
+            return <Navigate to="/login" />;
+        }
         let table;
         if(this.state.isSearch) {
             table = (<SearchPage
@@ -198,5 +212,4 @@ class CoursesPage extends React.Component {
     }
 }
 
-const root = createRoot(document.getElementById('root'));
-root.render(<CoursesPage />);
+export default CoursesPage;
