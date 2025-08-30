@@ -6,7 +6,7 @@ import LoginPage from "./LoginPage.jsx";
 
 function App() {
   return (
-    <BrowserRouter basename="/sas_core_planner/sas-core-planner">
+    <BrowserRouter basename="/sas-core-planner">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursesPage />} />
